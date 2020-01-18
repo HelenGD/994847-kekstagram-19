@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Елена Гонтарева](https://up.htmlacademy.ru/javascript/19/user/994847).
-* Наставник: [Анастасия Шишова].
+* Наставник: [Анастасия Шишова](https://up.htmlacademy.ru/javascript/19/user/830807).
 
 ---
 
