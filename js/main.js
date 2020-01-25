@@ -20,7 +20,7 @@ var createPhoto = function (id, description, likes, comments) {
 // Создает массив из 25 объектов фотографий
 var createPhotos = function () {
   var photos = [];
-  for (var i = 0; i <= 25; i++) {
+  for (var i = 0; i < 25; i++) {
     // Генерируем случайные комменты
     var photoComments = createComments();
     photos.push(createPhoto(i + 1, 'desc', random(15, 200), photoComments));
@@ -85,7 +85,7 @@ var createPictures = function () {
   var fragment = document.createDocumentFragment();
 
   // Создаем DOM-элементы и добавляет во фрагмент
-  for (var i = 0; i < photos.length - 1; i++) {
+  for (var i = 0; i < photos.length; i++) {
     var photo = photos[i];
     var picture = createPicture(photo);
     fragment.appendChild(picture);
