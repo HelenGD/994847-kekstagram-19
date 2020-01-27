@@ -134,7 +134,7 @@ var makeComments = function (comments) {
   commentsBlock.appendChild(fragment);
 };
 
-// Показывает большую фотографию с лайками и коментариями
+// Показывает большую фотографию с лайками и комментариями
 var showBigPicture = function () {
   var bigImage = bigPicture.querySelector('.big-picture__img');
   var likesBigImage = bigPicture.querySelector('.likes-count');
