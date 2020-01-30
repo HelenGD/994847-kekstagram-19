@@ -1,5 +1,37 @@
 'use strict';
 
+var COMMENTS_MIN_COUNT = 1;
+var COMMENTS_MAX_COUNT = 6;
+var COMMENTS_MIN_AVATAR_ID = 1;
+var COMMENTS_MAX_AVATAR_ID = 6;
+var COMMENTS_NAMES = ['Ваня', 'Петя', 'Коля', 'Семен', 'Игорь'];
+var COMMENTS_MESSAGES = [
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
+];
+var PHOTOS_MAX_COUNT = 25;
+var PHOTOS_MIN_LIKES_COUNT = 25;
+var PHOTOS_MAX_LIKES_COUNT = 200;
+
+var body = document.querySelector('body');
+var bigPicture = document.querySelector('.big-picture');
+var bigImage = bigPicture.querySelector('.big-picture__img');
+var likesBigImage = bigPicture.querySelector('.likes-count');
+var commentsBigImage = bigPicture.querySelector('.comments-count');
+var captionBigImage = bigPicture.querySelector('.social__caption');
+var commentsBlock = bigPicture.querySelector('.social__comments');
+var commentsCount = bigPicture.querySelector('.social__comment-count');
+var commentsLoader = bigPicture.querySelector('.comments-loader');
+var pictureEl = document.querySelector('#picture')
+    .content
+    .querySelector('.picture');
+var picturesContainer = document.querySelector('.pictures');
+var socialCommentEl = commentsBlock.querySelector('.social__comment');
+
 // Генерирует случайное число от min до max
 var getRandomValue = function (min, max) {
   min = Math.ceil(min);
@@ -19,13 +51,16 @@ var createPhoto = function (id, description, likes, comments) {
 
 // Создает массив из 25 объектов фотографий
 var createPhotos = function () {
-  var photos = [];
-  for (var i = 0; i < 25; i++) {
+  var pictures = [];
+  for (var i = 0; i < PHOTOS_MAX_COUNT; i++) {
     // Генерируем случайные комменты
     var photoComments = createComments();
-    photos.push(createPhoto(i + 1, 'Это моя фотография', getRandomValue(15, 200), photoComments));
+    var id = i + 1;
+    var title = 'Это моя фотография';
+    var likes = getRandomValue(PHOTOS_MIN_LIKES_COUNT, PHOTOS_MAX_LIKES_COUNT);
+    pictures.push(createPhoto(id, title, likes, photoComments));
   }
-  return photos;
+  return pictures;
 };
 
 // Создает один объект comment
@@ -39,33 +74,23 @@ var createComment = function (avatarId, message, name) {
 
 // Создает массив объектов comments
 var createComments = function () {
-  var names = ['Ваня', 'Петя', 'Коля', 'Семен', 'Игорь'];
-  // Берем случайный индекс
-  var name = names[getRandomValue(0, names.length - 1)];
+  var comments = [];
+  var maxComments = getRandomValue(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
 
-  var messages = [
-    'Всё отлично!',
-    'В целом всё неплохо. Но не всё.',
-    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-  ];
+  for (var i = 0; i <= maxComments; i++) {
+    // Берем случайный индекс
+    var name = COMMENTS_NAMES[getRandomValue(0, COMMENTS_NAMES.length - 1)];
+    var message = COMMENTS_MESSAGES[getRandomValue(0, COMMENTS_MESSAGES.length - 1)];
+    var id = getRandomValue(COMMENTS_MIN_AVATAR_ID, COMMENTS_MAX_AVATAR_ID);
+    comments.push(createComment(id, message, name));
+  }
 
-  var message = messages[getRandomValue(0, messages.length - 1)];
-
-  var comments = [
-    createComment(getRandomValue(1, 6), message, name)
-  ];
   return comments;
 };
 
 // Cоздает DOM-элемент на основе шаблона
 var createPicture = function (picturePhoto) {
-  var picture = document.querySelector('#picture')
-    .content
-    .querySelector('.picture')
-    .cloneNode(true);
+  var picture = pictureEl.cloneNode(true);
   var img = picture.querySelector('.picture__img');
   img.src = picturePhoto.url;
 
@@ -81,33 +106,25 @@ var createPicture = function (picturePhoto) {
 // Заполняет блок DOM-элементами на основе массива фотографий и отрисовывет их в блок .pictures
 var createPictures = function () {
   // Генерируем фото
-  var photos = createPhotos();
+  var pictures = createPhotos();
   var fragment = document.createDocumentFragment();
 
   // Создаем DOM-элементы и добавляет во фрагмент
-  for (var i = 0; i < photos.length; i++) {
-    var photo = photos[i];
+  for (var i = 0; i < pictures.length; i++) {
+    var photo = pictures[i];
     var picture = createPicture(photo);
     fragment.appendChild(picture);
   }
 
-  var picturesContainer = document.querySelector('.pictures');
   // Добавляем фрагмент со всеми фото на страницу
   picturesContainer.appendChild(fragment);
 };
 // Добавляет фотографии на страницу
 createPictures();
 
-// Отображение фотографии в полноэкранном режиме
-var photos = createPhotos();
-var bigPicture = document.querySelector('.big-picture');
-var currentPhoto = photos[0];
-var commentsBlock = bigPicture.querySelector('.social__comments');
-
 // Создает один комментарий на основе шаблона
-var makeСomment = function (comment) {
-  var commentEl = commentsBlock.querySelector('.social__comment')
-    .cloneNode(true);
+var createCommentElement = function (comment) {
+  var commentEl = socialCommentEl.cloneNode(true);
   var commentPicture = commentEl.querySelector('.social__picture');
   var commentText = commentEl.querySelector('.social__text');
 
@@ -118,28 +135,24 @@ var makeСomment = function (comment) {
 };
 
 // Создает блок комментариев на основе шаблона
-var makeComments = function (comments) {
+var renderComments = function (comments) {
   // Прячем блоки счётчика комментариев и загрузки новых комментариев
-  var commentsCount = bigPicture.querySelector('.social__comment-count');
-  var commentsLoader = bigPicture.querySelector('.comments-loader');
   commentsCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < comments.length; i++) {
-    var itemComment = makeСomment(comments[i]);
+    var itemComment = createCommentElement(comments[i]);
     fragment.appendChild(itemComment);
   }
-  commentsBlock.contextText = '';
+  commentsBlock.innerHTML = '';
   commentsBlock.appendChild(fragment);
 };
 
 // Показывает большую фотографию с лайками и комментариями
 var showBigPicture = function () {
-  var bigImage = bigPicture.querySelector('.big-picture__img');
-  var likesBigImage = bigPicture.querySelector('.likes-count');
-  var commentsBigImage = bigPicture.querySelector('.comments-count');
-  var captionBigImage = bigPicture.querySelector('.social__caption');
+  var photos = createPhotos();
+  var currentPhoto = photos[0];
   bigPicture.classList.remove('hidden');
 
   bigImage.src = currentPhoto.url;
@@ -147,15 +160,14 @@ var showBigPicture = function () {
   commentsBigImage.textContent = currentPhoto.comments.length;
   captionBigImage.textContent = currentPhoto.description;
 
-  makeComments(currentPhoto.comments);
+  renderComments(currentPhoto.comments);
 };
 // Добавляет большую фотографию на страницу
 showBigPicture();
 
 // Добавляет body класс, чтобы контейнер с фотографиями позади не прокручивался при скролле
 var deleteScroll = function () {
-  var noScroll = document.querySelector('body');
-  noScroll.classList.add('modal-open');
+  body.classList.add('modal-open');
 };
 // Убирает прокручивание при скролле
 deleteScroll();
