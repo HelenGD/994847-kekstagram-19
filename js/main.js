@@ -84,7 +84,6 @@ var createComments = function () {
     var id = getRandomValue(COMMENTS_MIN_AVATAR_ID, COMMENTS_MAX_AVATAR_ID);
     comments.push(createComment(id, message, name));
   }
-
   return comments;
 };
 
@@ -119,8 +118,6 @@ var createPictures = function () {
   // Добавляем фрагмент со всеми фото на страницу
   picturesContainer.appendChild(fragment);
 };
-// Добавляет фотографии на страницу
-createPictures();
 
 // Создает один комментарий на основе шаблона
 var createCommentElement = function (comment) {
@@ -162,13 +159,15 @@ var showBigPicture = function () {
 
   renderComments(currentPhoto.comments);
 };
-// Добавляет большую фотографию на страницу
-showBigPicture();
 
 // Добавляет body класс, чтобы контейнер с фотографиями позади не прокручивался при скролле
 var deleteScroll = function () {
   body.classList.add('modal-open');
 };
+// Добавляет большую фотографию на страницу
+showBigPicture();
+// Добавляет фотографии на страницу
+createPictures();
 // Убирает прокручивание при скролле
 deleteScroll();
 
