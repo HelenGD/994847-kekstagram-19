@@ -51,16 +51,16 @@ var createPhoto = function (id, description, likes, comments) {
 
 // Создает массив из 25 объектов фотографий
 var createPhotos = function () {
-  var pictures = [];
+  var photos = [];
   for (var i = 0; i < PHOTOS_MAX_COUNT; i++) {
     // Генерируем случайные комменты
     var photoComments = createComments();
     var id = i + 1;
     var title = 'Это моя фотография';
     var likes = getRandomValue(PHOTOS_MIN_LIKES_COUNT, PHOTOS_MAX_LIKES_COUNT);
-    pictures.push(createPhoto(id, title, likes, photoComments));
+    photos.push(createPhoto(id, title, likes, photoComments));
   }
-  return pictures;
+  return photos;
 };
 
 // Создает один объект comment
@@ -77,7 +77,7 @@ var createComments = function () {
   var comments = [];
   var maxComments = getRandomValue(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
 
-  for (var i = 0; i <= maxComments; i++) {
+  for (var i = 0; i < maxComments; i++) {
     // Берем случайный индекс
     var name = COMMENTS_NAMES[getRandomValue(0, COMMENTS_NAMES.length - 1)];
     var message = COMMENTS_MESSAGES[getRandomValue(0, COMMENTS_MESSAGES.length - 1)];
@@ -88,31 +88,31 @@ var createComments = function () {
 };
 
 // Cоздает DOM-элемент на основе шаблона
-var createPicture = function (picturePhoto) {
-  var picture = pictureEl.cloneNode(true);
-  var img = picture.querySelector('.picture__img');
-  img.src = picturePhoto.url;
+var createPhotoElement = function (photo) {
+  var photoElement = pictureEl.cloneNode(true);
+  var img = photoElement.querySelector('.picture__img');
+  img.src = photo.url;
 
-  var likes = picture.querySelector('.picture__likes');
-  likes.textContent = picturePhoto.likes;
+  var likes = photoElement.querySelector('.picture__likes');
+  likes.textContent = photo.likes;
 
-  var comments = picture.querySelector('.picture__comments');
-  comments.textContent = picturePhoto.comments.length;
+  var comments = photoElement.querySelector('.picture__comments');
+  comments.textContent = photo.comments.length;
 
-  return picture;
+  return photoElement;
 };
 
 // Заполняет блок DOM-элементами на основе массива фотографий и отрисовывет их в блок .pictures
-var createPictures = function () {
+var renderPhotos = function () {
   // Генерируем фото
-  var pictures = createPhotos();
+  var photos = createPhotos();
   var fragment = document.createDocumentFragment();
 
   // Создаем DOM-элементы и добавляет во фрагмент
-  for (var i = 0; i < pictures.length; i++) {
-    var photo = pictures[i];
-    var picture = createPicture(photo);
-    fragment.appendChild(picture);
+  for (var i = 0; i < photos.length; i++) {
+    var photo = photos[i];
+    var photoElement = createPhotoElement(photo);
+    fragment.appendChild(photoElement);
   }
 
   // Добавляем фрагмент со всеми фото на страницу
@@ -167,7 +167,7 @@ var deleteScroll = function () {
 // Добавляет большую фотографию на страницу
 showBigPicture();
 // Добавляет фотографии на страницу
-createPictures();
+renderPhotos();
 // Убирает прокручивание при скролле
 deleteScroll();
 
