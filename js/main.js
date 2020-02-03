@@ -51,16 +51,16 @@ var createPhoto = function (id, description, likes, comments) {
 
 // Создает массив из 25 объектов фотографий
 var createPhotos = function () {
-  var photos = [];
+  var pictures = [];
   for (var i = 0; i < PHOTOS_MAX_COUNT; i++) {
     // Генерируем случайные комменты
     var photoComments = createComments();
     var id = i + 1;
     var title = 'Это моя фотография';
     var likes = getRandomValue(PHOTOS_MIN_LIKES_COUNT, PHOTOS_MAX_LIKES_COUNT);
-    photos.push(createPhoto(id, title, likes, photoComments));
+    pictures.push(createPhoto(id, title, likes, photoComments));
   }
-  return photos;
+  return pictures;
 };
 
 // Создает один объект comment
@@ -103,9 +103,8 @@ var createPhotoElement = function (photo) {
 };
 
 // Заполняет блок DOM-элементами на основе массива фотографий и отрисовывет их в блок .pictures
-var renderPhotos = function () {
+var renderPhotos = function (photos) {
   // Генерируем фото
-  var photos = createPhotos();
   var fragment = document.createDocumentFragment();
 
   // Создаем DOM-элементы и добавляет во фрагмент
@@ -147,9 +146,7 @@ var renderComments = function (comments) {
 };
 
 // Показывает большую фотографию с лайками и комментариями
-var showBigPicture = function () {
-  var photos = createPhotos();
-  var currentPhoto = photos[0];
+var showBigPicture = function (currentPhoto) {
   bigPicture.classList.remove('hidden');
 
   bigImage.src = currentPhoto.url;
@@ -164,10 +161,13 @@ var showBigPicture = function () {
 var deleteScroll = function () {
   body.classList.add('modal-open');
 };
+
+var photos = createPhotos();
+var currentPhoto = photos[0];
 // Добавляет большую фотографию на страницу
-showBigPicture();
+showBigPicture(currentPhoto);
 // Добавляет фотографии на страницу
-renderPhotos();
+renderPhotos(photos);
 // Убирает прокручивание при скролле
 deleteScroll();
 
