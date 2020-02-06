@@ -164,6 +164,7 @@ var renderComments = function (comments) {
 };
 
 // Показывает большую фотографию с лайками и комментариями
+// eslint-disable-next-line no-unused-vars
 var showBigPicture = function (currentPhoto) {
   bigPicture.classList.remove('hidden');
 
@@ -176,38 +177,30 @@ var showBigPicture = function (currentPhoto) {
 };
 
 // Добавляет body класс, чтобы контейнер с фотографиями позади не прокручивался при скролле
+// eslint-disable-next-line no-unused-vars
 var deleteScroll = function () {
   body.classList.add('modal-open');
 };
 
-var photos = createPhotos();
-var currentPhoto = photos[0];
-// Добавляет большую фотографию на страницу
-showBigPicture(currentPhoto);
-// Добавляет фотографии на страницу
-renderPhotos(photos);
-// Убирает прокручивание при скролле
-deleteScroll();
-
 // Закрывает попап по нажатию на ESCAPE
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEY) {
-    closePopup();
+    onClosePopup();
   }
 };
 
-// Устанавливает эффект
-var setEffect = function (perc/* 0..1 */) {
+// Устанавливает эффект, принимает процент
+var setEffect = function (percent) {
   if (currentEffect === EFFECT_CHROME) {
-    setFilterGrayscale(perc);
+    setFilterGrayscale(percent);
   } else if (currentEffect === EFFECT_SEPIA) {
-    setFilterSepia(perc);
+    setFilterSepia(percent);
   } else if (currentEffect === EFFECT_MARVIN) {
-    setFilterInvert(perc);
+    setFilterInvert(percent);
   } else if (currentEffect === EFFECT_PHOBOS) {
-    setFilterBlur(perc);
+    setFilterBlur(percent);
   } else if (currentEffect === EFFECT_HEAT) {
-    setFilterBrightness(perc);
+    setFilterBrightness(percent);
   } else if (currentEffect === EFFECT_NONE) {
     resetFilter();
   }
@@ -219,8 +212,8 @@ var onEffectChange = function (evt) {
 };
 
 var onSaturationChange = function (evt) {
-  var perc = getSaturationPerc(evt);
-  setEffect(perc);
+  var percent = getSaturationPercent(evt);
+  setEffect(percent);
 };
 
 var onFocusHastags = function () {
@@ -231,89 +224,69 @@ var onBlurHashtags = function () {
   document.addEventListener('keydown', onPopupEscPress);
 };
 
+var onInputHashtags = function (evt) {
+  var value = evt.target.value;
+  var error = validateHashtags(parseHashtags(value));
+  evt.target.setCustomValidity(error);
+};
+
 // Открывает попап
-var openPopup = function () {
+var onOpenPopup = function () {
   popupEditImg.classList.remove('hidden');
   body.classList.add('modal-open');
-  document.addEventListener('keydown', onPopupEscPress);
-
-  hashtagsInput.addEventListener('focus', onFocusHastags);
-
-  hashtagsInput.addEventListener('blur', onBlurHashtags);
-
-
-  hashtagsInput.addEventListener('input', function (evt) {
-    var value = evt.target.value;
-    var error = validateHashtags(parseHashtags(value));
-    evt.target.setCustomValidity(error);
-  });
-
-  for (var i = 0; i < effectsRadios.length; i++) {
-    effectsRadios[i].addEventListener('change', onEffectChange);
-  }
-
-  effectLevelEl.addEventListener('mouseup', onSaturationChange);
 };
 
 // Закрывает попап
-var closePopup = function () {
+var onClosePopup = function () {
   popupEditImg.classList.add('hidden');
   body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onPopupEscPress);
-  hashtagsInput.removeEventListener('focus', onFocusHastags);
-  hashtagsInput.removeEventListener('blur', onBlurHashtags);
-  effectLevelEl.removeEventListener('mouseup', onSaturationChange);
-  for (var i = 0; i < effectsRadios.length; i++) {
-    effectsRadios[i].removeEventListener('change', onEffectChange);
-  }
   openPopupEditImg.value = '';
+
+  resetFilter();
+  currentEffect = EFFECT_NONE;
 };
 
-openPopupEditImg.addEventListener('change', function () {
-  openPopup();
-});
+openPopupEditImg.addEventListener('change', onOpenPopup);
 
-closePopupEditImg.addEventListener('click', function () {
-  closePopup();
-});
+closePopupEditImg.addEventListener('click', onClosePopup);
 
 // Устанавливает эффект "Хром"
-var setFilterGrayscale = function (perc) {
-  imgUploadPreviewEl.style.filter = 'grayscale(' + perc + ')';
+var setFilterGrayscale = function (percent) {
+  imgUploadPreviewEl.style.filter = 'grayscale(' + percent + ')';
 };
 
 // Устанавливает эффект "Сепия"
-var setFilterSepia = function (perc) {
-  imgUploadPreviewEl.style.filter = 'sepia(' + perc + ')';
+var setFilterSepia = function (percent) {
+  imgUploadPreviewEl.style.filter = 'sepia(' + percent + ')';
 };
 
 // Устанавливает эффект "Марвин"
-var setFilterInvert = function (perc) {
-  imgUploadPreviewEl.style.filter = 'invert(' + perc * 100 + '%)';
+var setFilterInvert = function (percent) {
+  imgUploadPreviewEl.style.filter = 'invert(' + percent * 100 + '%)';
 };
 
 // Устанавливает эффект "Фобос"
-var setFilterBlur = function (perc) {
-  imgUploadPreviewEl.style.filter = 'blur(' + 3 * perc + 'px)';
+var setFilterBlur = function (percent) {
+  imgUploadPreviewEl.style.filter = 'blur(' + 3 * percent + 'px)';
 };
 
 // Устанавливает эффект "Зной"
-var setFilterBrightness = function (perc) {
-  imgUploadPreviewEl.style.filter = 'brightness(' + 3 * perc + ')';
+var setFilterBrightness = function (percent) {
+  imgUploadPreviewEl.style.filter = 'brightness(' + 3 * percent + ')';
 };
 
 // Сбрасывает эффект
 var resetFilter = function () {
-  imgUploadPreviewEl.style.filter = undefined;
+  imgUploadPreviewEl.style.filter = '';
 };
 
 // Получает проценты насыщенности
-var getSaturationPerc = function (evt) {
+var getSaturationPercent = function (evt) {
   var rect = evt.target.getBoundingClientRect();
   var offsetX = evt.clientX - rect.left;
-  var perc = offsetX / rect.width;
+  var percent = offsetX / rect.width;
 
-  return perc;
+  return percent;
 };
 
 // Валидирует один хэштэг
@@ -367,3 +340,21 @@ var parseHashtags = function (hashtagStr) {
     .split(' ');
   return hashtagArr.filter(Boolean);
 };
+
+var photos = createPhotos();
+// var currentPhoto = photos[0];
+// Добавляет большую фотографию на страницу
+// showBigPicture(currentPhoto);
+// Добавляет фотографии на страницу
+renderPhotos(photos);
+// Убирает прокручивание при скролле
+// deleteScroll();
+
+document.addEventListener('keydown', onPopupEscPress);
+hashtagsInput.addEventListener('focus', onFocusHastags);
+hashtagsInput.addEventListener('blur', onBlurHashtags);
+hashtagsInput.addEventListener('input', onInputHashtags);
+effectLevelEl.addEventListener('mouseup', onSaturationChange);
+for (var radioIndex = 0; radioIndex < effectsRadios.length; radioIndex++) {
+  effectsRadios[radioIndex].addEventListener('change', onEffectChange);
+}
