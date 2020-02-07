@@ -16,6 +16,16 @@ var COMMENTS_MESSAGES = [
 var PHOTOS_MAX_COUNT = 25;
 var PHOTOS_MIN_LIKES_COUNT = 25;
 var PHOTOS_MAX_LIKES_COUNT = 200;
+var ESC_KEY = 27;
+var HASHTAGS_MIN_LENGTH = 2;
+var HASHTAGS_MAX_LENGTH = 20;
+var HASHTAGS_MAX_COUNT = 5;
+var EFFECT_CHROME = 'chrome';
+var EFFECT_NONE = 'none';
+var EFFECT_SEPIA = 'sepia';
+var EFFECT_MARVIN = 'marvin';
+var EFFECT_PHOBOS = 'phobos';
+var EFFECT_HEAT = 'heat';
 
 var body = document.querySelector('body');
 var bigPicture = document.querySelector('.big-picture');
@@ -31,6 +41,14 @@ var pictureEl = document.querySelector('#picture')
     .querySelector('.picture');
 var picturesContainer = document.querySelector('.pictures');
 var socialCommentEl = commentsBlock.querySelector('.social__comment');
+var popupEditImg = document.querySelector('.img-upload__overlay');
+var openPopupEditImg = document.querySelector('#upload-file');
+var closePopupEditImg = document.querySelector('#upload-cancel');
+var hashtagsInput = popupEditImg.querySelector('.text__hashtags');
+var effectLevelEl = popupEditImg.querySelector('.effect-level');
+var effectsRadios = popupEditImg.querySelectorAll('.effects__radio');
+var imgUploadPreviewEl = popupEditImg.querySelector('.img-upload__preview');
+var currentEffect = EFFECT_NONE;
 
 // Генерирует случайное число от min до max
 var getRandomValue = function (min, max) {
@@ -146,6 +164,7 @@ var renderComments = function (comments) {
 };
 
 // Показывает большую фотографию с лайками и комментариями
+// eslint-disable-next-line no-unused-vars
 var showBigPicture = function (currentPhoto) {
   bigPicture.classList.remove('hidden');
 
@@ -158,16 +177,184 @@ var showBigPicture = function (currentPhoto) {
 };
 
 // Добавляет body класс, чтобы контейнер с фотографиями позади не прокручивался при скролле
+// eslint-disable-next-line no-unused-vars
 var deleteScroll = function () {
   body.classList.add('modal-open');
 };
 
+// Закрывает попап по нажатию на ESCAPE
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEY) {
+    onClosePopup();
+  }
+};
+
+// Устанавливает эффект, принимает процент
+var setEffect = function (percent) {
+  if (currentEffect === EFFECT_CHROME) {
+    setFilterGrayscale(percent);
+  } else if (currentEffect === EFFECT_SEPIA) {
+    setFilterSepia(percent);
+  } else if (currentEffect === EFFECT_MARVIN) {
+    setFilterInvert(percent);
+  } else if (currentEffect === EFFECT_PHOBOS) {
+    setFilterBlur(percent);
+  } else if (currentEffect === EFFECT_HEAT) {
+    setFilterBrightness(percent);
+  } else if (currentEffect === EFFECT_NONE) {
+    resetFilter();
+  }
+};
+
+var onEffectChange = function (evt) {
+  currentEffect = evt.target.value;
+  setEffect(1);
+};
+
+var onSaturationChange = function (evt) {
+  var percent = getSaturationPercent(evt);
+  setEffect(percent);
+};
+
+var onFocusHastags = function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+var onBlurHashtags = function () {
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+var onInputHashtags = function (evt) {
+  var value = evt.target.value;
+  var error = validateHashtags(parseHashtags(value));
+  evt.target.setCustomValidity(error);
+};
+
+// Открывает попап
+var onOpenPopup = function () {
+  popupEditImg.classList.remove('hidden');
+  body.classList.add('modal-open');
+};
+
+// Закрывает попап
+var onClosePopup = function () {
+  popupEditImg.classList.add('hidden');
+  body.classList.remove('modal-open');
+  openPopupEditImg.value = '';
+
+  resetFilter();
+  currentEffect = EFFECT_NONE;
+};
+
+openPopupEditImg.addEventListener('change', onOpenPopup);
+
+closePopupEditImg.addEventListener('click', onClosePopup);
+
+// Устанавливает эффект "Хром"
+var setFilterGrayscale = function (percent) {
+  imgUploadPreviewEl.style.filter = 'grayscale(' + percent + ')';
+};
+
+// Устанавливает эффект "Сепия"
+var setFilterSepia = function (percent) {
+  imgUploadPreviewEl.style.filter = 'sepia(' + percent + ')';
+};
+
+// Устанавливает эффект "Марвин"
+var setFilterInvert = function (percent) {
+  imgUploadPreviewEl.style.filter = 'invert(' + percent * 100 + '%)';
+};
+
+// Устанавливает эффект "Фобос"
+var setFilterBlur = function (percent) {
+  imgUploadPreviewEl.style.filter = 'blur(' + 3 * percent + 'px)';
+};
+
+// Устанавливает эффект "Зной"
+var setFilterBrightness = function (percent) {
+  imgUploadPreviewEl.style.filter = 'brightness(' + 3 * percent + ')';
+};
+
+// Сбрасывает эффект
+var resetFilter = function () {
+  imgUploadPreviewEl.style.filter = '';
+};
+
+// Получает проценты насыщенности
+var getSaturationPercent = function (evt) {
+  var rect = evt.target.getBoundingClientRect();
+  var offsetX = evt.clientX - rect.left;
+  var percent = offsetX / rect.width;
+
+  return percent;
+};
+
+// Валидирует один хэштэг
+var validateHashtag = function (hashtag) {
+  if (hashtag.length < HASHTAGS_MIN_LENGTH) {
+    return 'Минимальная длина одного хэш-тега 2 символа, включая решётку';
+  }
+  if (hashtag.length > HASHTAGS_MAX_LENGTH) {
+    return 'Максимальная длина одного хэш-тега 20 символов, включая решётку';
+  }
+  if (!/^#[a-zA-Z0-9]+$/.test(hashtag)) {
+    return 'Хэш-тег не должен содержать спецсимволы';
+  }
+  return '';
+};
+
+// Проверяет хэштэг на уникальность
+var checkUniqHashtag = function (hashtags) {
+  var uniqHastagsMap = {};
+  for (var i = 0; i < hashtags.length; i++) {
+    if (hashtags[i] in uniqHastagsMap) {
+      return false;
+    } else {
+      uniqHastagsMap[hashtags[i]] = true;
+    }
+  }
+  return true;
+};
+
+// Валидирует хэштэги
+var validateHashtags = function (hashtags) {
+  for (var i = 0; i < hashtags.length; i++) {
+    var error = validateHashtag(hashtags[i]);
+    if (error) {
+      return error;
+    }
+  }
+  if (hashtags.length > HASHTAGS_MAX_COUNT) {
+    return 'Нельзя указать больше пяти хэш-тегов';
+  }
+  if (!checkUniqHashtag(hashtags)) {
+    return 'один и тот же хэш-тег не может быть использован дважды';
+  }
+  return '';
+};
+
+// Превращает набор хэштэгов в массив
+var parseHashtags = function (hashtagStr) {
+  var hashtagArr = hashtagStr
+    .toLowerCase()
+    .split(' ');
+  return hashtagArr.filter(Boolean);
+};
+
 var photos = createPhotos();
-var currentPhoto = photos[0];
+// var currentPhoto = photos[0];
 // Добавляет большую фотографию на страницу
-showBigPicture(currentPhoto);
+// showBigPicture(currentPhoto);
 // Добавляет фотографии на страницу
 renderPhotos(photos);
 // Убирает прокручивание при скролле
-deleteScroll();
+// deleteScroll();
 
+document.addEventListener('keydown', onPopupEscPress);
+hashtagsInput.addEventListener('focus', onFocusHastags);
+hashtagsInput.addEventListener('blur', onBlurHashtags);
+hashtagsInput.addEventListener('input', onInputHashtags);
+effectLevelEl.addEventListener('mouseup', onSaturationChange);
+for (var radioIndex = 0; radioIndex < effectsRadios.length; radioIndex++) {
+  effectsRadios[radioIndex].addEventListener('change', onEffectChange);
+}
