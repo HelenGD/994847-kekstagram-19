@@ -10,9 +10,6 @@ window.editPhoto = (function () {
   var EFFECT_PHOBOS = 'phobos';
   var EFFECT_HEAT = 'heat';
 
-  var parseHashtags = window.util.parseHashtags;
-  var validateHashtags = window.util.validateHashtags;
-
   var body = document.querySelector('body');
   var popupEditImg = document.querySelector('.img-upload__overlay');
   var openPopupEditImg = document.querySelector('#upload-file');
@@ -21,7 +18,11 @@ window.editPhoto = (function () {
   var effectLevelEl = popupEditImg.querySelector('.effect-level');
   var effectsRadios = popupEditImg.querySelectorAll('.effects__radio');
   var imgUploadPreviewEl = popupEditImg.querySelector('.img-upload__preview');
+  var effectLevelValue = document.querySelector('.effect-level__value');
+  var effectLevelLine = document.querySelector('.effect-level__line');
   var currentEffect = EFFECT_NONE;
+
+  var effects = {};
 
   // Закрывает попап по нажатию на ESCAPE
   var onPopupEscPress = function (evt) {
@@ -30,31 +31,24 @@ window.editPhoto = (function () {
     }
   };
 
-  // Устанавливает эффект, принимает процент
-  var setEffect = function (percent) {
-    if (currentEffect === EFFECT_CHROME) {
-      setFilterGrayscale(percent);
-    } else if (currentEffect === EFFECT_SEPIA) {
-      setFilterSepia(percent);
-    } else if (currentEffect === EFFECT_MARVIN) {
-      setFilterInvert(percent);
-    } else if (currentEffect === EFFECT_PHOBOS) {
-      setFilterBlur(percent);
-    } else if (currentEffect === EFFECT_HEAT) {
-      setFilterBrightness(percent);
-    } else if (currentEffect === EFFECT_NONE) {
-      resetFilter();
-    }
-  };
-
   var onEffectChange = function (evt) {
-    currentEffect = evt.target.value;
-    setEffect(1);
+    var newCurrentEffect = evt.target.value;
+    if (newCurrentEffect === EFFECT_NONE) {
+      effectLevelEl.classList.add('hidden');
+      imgUploadPreviewEl.classList.remove('effects__preview--' + currentEffect);
+    } else {
+      effectLevelEl.classList.remove('hidden');
+      imgUploadPreviewEl.classList.add('effects__preview--' + newCurrentEffect);
+    }
+    currentEffect = newCurrentEffect;
+    effects[currentEffect](1);
+    effectLevelValue.value = 100;
   };
 
   var onSaturationChange = function (evt) {
     var percent = getSaturationPercent(evt);
-    setEffect(percent);
+    effects[currentEffect](percent);
+    effectLevelValue.value = percent * 100;
   };
 
   var onFocusHastags = function () {
@@ -67,7 +61,7 @@ window.editPhoto = (function () {
 
   var onInputHashtags = function (evt) {
     var value = evt.target.value;
-    var error = validateHashtags(parseHashtags(value));
+    var error = window.util.validateHashtags(window.util.parseHashtags(value));
     evt.target.setCustomValidity(error);
   };
 
@@ -75,6 +69,8 @@ window.editPhoto = (function () {
   var onOpenPopup = function () {
     popupEditImg.classList.remove('hidden');
     body.classList.add('modal-open');
+    effectLevelEl.classList.add('hidden');
+    effectLevelValue.value = 100;
   };
 
   // Закрывает попап
@@ -83,7 +79,8 @@ window.editPhoto = (function () {
     body.classList.remove('modal-open');
     openPopupEditImg.value = '';
 
-    resetFilter();
+    resetEffect();
+    imgUploadPreviewEl.classList.remove('effects__preview--' + currentEffect);
     currentEffect = EFFECT_NONE;
   };
 
@@ -92,42 +89,49 @@ window.editPhoto = (function () {
   closePopupEditImg.addEventListener('click', onClosePopup);
 
   // Устанавливает эффект "Хром"
-  var setFilterGrayscale = function (percent) {
+  var setEffectGrayscale = function (percent) {
     imgUploadPreviewEl.style.filter = 'grayscale(' + percent + ')';
   };
 
   // Устанавливает эффект "Сепия"
-  var setFilterSepia = function (percent) {
+  var setEffectSepia = function (percent) {
     imgUploadPreviewEl.style.filter = 'sepia(' + percent + ')';
   };
 
   // Устанавливает эффект "Марвин"
-  var setFilterInvert = function (percent) {
+  var setEffectInvert = function (percent) {
     imgUploadPreviewEl.style.filter = 'invert(' + percent * 100 + '%)';
   };
 
   // Устанавливает эффект "Фобос"
-  var setFilterBlur = function (percent) {
+  var setEffectBlur = function (percent) {
     imgUploadPreviewEl.style.filter = 'blur(' + 3 * percent + 'px)';
   };
 
   // Устанавливает эффект "Зной"
-  var setFilterBrightness = function (percent) {
-    imgUploadPreviewEl.style.filter = 'brightness(' + 3 * percent + ')';
+  var setEffectBrightness = function (percent) {
+    imgUploadPreviewEl.style.filter = 'brightness(' + (2 * percent + 1) + ')';
   };
 
+  effects[EFFECT_CHROME] = setEffectGrayscale;
+  effects[EFFECT_SEPIA] = setEffectSepia;
+  effects[EFFECT_MARVIN] = setEffectInvert;
+  effects[EFFECT_PHOBOS] = setEffectBlur;
+  effects[EFFECT_HEAT] = setEffectBrightness;
+  effects[EFFECT_NONE] = resetEffect;
+
   // Сбрасывает эффект
-  var resetFilter = function () {
+  var resetEffect = function () {
     imgUploadPreviewEl.style.filter = '';
   };
 
   // Получает проценты насыщенности
   var getSaturationPercent = function (evt) {
-    var rect = evt.target.getBoundingClientRect();
+    var rect = effectLevelLine.getBoundingClientRect();
     var offsetX = evt.clientX - rect.left;
     var percent = offsetX / rect.width;
 
-    return percent;
+    return Math.min(1, Math.max(0, percent));
   };
 
   document.addEventListener('keydown', onPopupEscPress);

@@ -5,9 +5,6 @@ window.photo = (function () {
   var PHOTOS_MIN_LIKES_COUNT = 25;
   var PHOTOS_MAX_LIKES_COUNT = 200;
 
-  var getRandomValue = window.util.getRandomValue;
-  var createComments = window.comment.createComments;
-
   var pictureEl = document.querySelector('#picture')
     .content
     .querySelector('.picture');
@@ -28,10 +25,10 @@ window.photo = (function () {
     var pictures = [];
     for (var i = 0; i < PHOTOS_MAX_COUNT; i++) {
     // Генерируем случайные комменты
-      var photoComments = createComments();
+      var photoComments = window.comment.create();
       var id = i + 1;
       var title = 'Это моя фотография';
-      var likes = getRandomValue(PHOTOS_MIN_LIKES_COUNT, PHOTOS_MAX_LIKES_COUNT);
+      var likes = window.util.getRandomValue(PHOTOS_MIN_LIKES_COUNT, PHOTOS_MAX_LIKES_COUNT);
       pictures.push(createPhoto(id, title, likes, photoComments));
     }
     return pictures;
@@ -74,7 +71,7 @@ window.photo = (function () {
   renderPhotos(photos);
 
   return {
-    createPhotos: createPhotos,
-    renderPhotos: renderPhotos,
+    create: createPhotos,
+    render: renderPhotos,
   };
 })();

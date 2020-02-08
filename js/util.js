@@ -20,7 +20,8 @@ window.util = (function () {
     if (hashtag.length > HASHTAGS_MAX_LENGTH) {
       return 'Максимальная длина одного хэш-тега 20 символов, включая решётку';
     }
-    if (!/^#[a-zA-Z0-9]+$/.test(hashtag)) {
+
+    if (!/^#[a-zA-Zа-яА-ЯёЁ0-9]+$/.test(hashtag)) {
       return 'Хэш-тег не должен содержать спецсимволы';
     }
     return '';

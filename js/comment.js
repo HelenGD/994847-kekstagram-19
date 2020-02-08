@@ -1,5 +1,4 @@
 'use strict';
-
 window.comment = (function () {
   var COMMENTS_MIN_COUNT = 1;
   var COMMENTS_MAX_COUNT = 6;
@@ -14,8 +13,6 @@ window.comment = (function () {
     'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
     'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
   ];
-
-  var getRandomValue = window.util.getRandomValue;
 
   var bigPicture = document.querySelector('.big-picture');
   var commentsCount = bigPicture.querySelector('.social__comment-count');
@@ -35,13 +32,13 @@ window.comment = (function () {
   // Создает массив объектов comments
   var createComments = function () {
     var comments = [];
-    var maxComments = getRandomValue(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
+    var maxComments = window.util.getRandomValue(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
 
     for (var i = 0; i < maxComments; i++) {
     // Берем случайный индекс
-      var name = COMMENTS_NAMES[getRandomValue(0, COMMENTS_NAMES.length - 1)];
-      var message = COMMENTS_MESSAGES[getRandomValue(0, COMMENTS_MESSAGES.length - 1)];
-      var id = getRandomValue(COMMENTS_MIN_AVATAR_ID, COMMENTS_MAX_AVATAR_ID);
+      var name = COMMENTS_NAMES[window.util.getRandomValue(0, COMMENTS_NAMES.length - 1)];
+      var message = COMMENTS_MESSAGES[window.util.getRandomValue(0, COMMENTS_MESSAGES.length - 1)];
+      var id = window.util.getRandomValue(COMMENTS_MIN_AVATAR_ID, COMMENTS_MAX_AVATAR_ID);
       comments.push(createComment(id, message, name));
     }
     return comments;
@@ -75,7 +72,7 @@ window.comment = (function () {
   };
 
   return {
-    renderComments: renderComments,
-    createComments: createComments,
+    render: renderComments,
+    create: createComments,
   };
 })();

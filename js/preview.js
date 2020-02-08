@@ -1,8 +1,6 @@
 'use strict';
 
 window.preview = (function () {
-  var renderComments = window.comment.renderComments;
-
   var bigPicture = document.querySelector('.big-picture');
   var bigImage = bigPicture.querySelector('.big-picture__img');
   var likesBigImage = bigPicture.querySelector('.likes-count');
@@ -18,7 +16,7 @@ window.preview = (function () {
     commentsBigImage.textContent = currentPhoto.comments.length;
     captionBigImage.textContent = currentPhoto.description;
 
-    renderComments(currentPhoto.comments);
+    window.comment.render(currentPhoto.comments);
   };
 
   return {
