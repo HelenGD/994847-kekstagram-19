@@ -32,13 +32,13 @@ window.comment = (function () {
   // Создает массив объектов comments
   var createComments = function () {
     var comments = [];
-    var maxComments = window.util.getRandomValue(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
+    var maxComments = window.utils.getRandomValue(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
 
     for (var i = 0; i < maxComments; i++) {
     // Берем случайный индекс
-      var name = COMMENTS_NAMES[window.util.getRandomValue(0, COMMENTS_NAMES.length - 1)];
-      var message = COMMENTS_MESSAGES[window.util.getRandomValue(0, COMMENTS_MESSAGES.length - 1)];
-      var id = window.util.getRandomValue(COMMENTS_MIN_AVATAR_ID, COMMENTS_MAX_AVATAR_ID);
+      var name = COMMENTS_NAMES[window.utils.getRandomValue(0, COMMENTS_NAMES.length - 1)];
+      var message = COMMENTS_MESSAGES[window.utils.getRandomValue(0, COMMENTS_MESSAGES.length - 1)];
+      var id = window.utils.getRandomValue(COMMENTS_MIN_AVATAR_ID, COMMENTS_MAX_AVATAR_ID);
       comments.push(createComment(id, message, name));
     }
     return comments;

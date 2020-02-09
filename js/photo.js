@@ -28,7 +28,7 @@ window.photo = (function () {
       var photoComments = window.comment.create();
       var id = i + 1;
       var title = 'Это моя фотография';
-      var likes = window.util.getRandomValue(PHOTOS_MIN_LIKES_COUNT, PHOTOS_MAX_LIKES_COUNT);
+      var likes = window.utils.getRandomValue(PHOTOS_MIN_LIKES_COUNT, PHOTOS_MAX_LIKES_COUNT);
       pictures.push(createPhoto(id, title, likes, photoComments));
     }
     return pictures;

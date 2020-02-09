@@ -1,16 +1,9 @@
 'use strict';
 
-window.util = (function () {
+window.validation = (function () {
   var HASHTAGS_MIN_LENGTH = 2;
   var HASHTAGS_MAX_LENGTH = 20;
   var HASHTAGS_MAX_COUNT = 5;
-
-  // Генерирует случайное число от min до max
-  var getRandomValue = function (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
 
   // Валидирует один хэштэг
   var validateHashtag = function (hashtag) {
@@ -66,7 +59,6 @@ window.util = (function () {
   };
 
   return {
-    getRandomValue: getRandomValue,
     parseHashtags: parseHashtags,
     validateHashtags: validateHashtags,
   };
