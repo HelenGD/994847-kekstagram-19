@@ -4,6 +4,7 @@ window.validation = (function () {
   var HASHTAGS_MIN_LENGTH = 2;
   var HASHTAGS_MAX_LENGTH = 20;
   var HASHTAGS_MAX_COUNT = 5;
+  var HASHTAG_REGEX = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
 
   // Валидирует один хэштэг
   var validateHashtag = function (hashtag) {
@@ -14,8 +15,8 @@ window.validation = (function () {
       return 'Максимальная длина одного хэш-тега 20 символов, включая решётку';
     }
 
-    if (!/^#[a-zA-Zа-яА-ЯёЁ0-9]+$/.test(hashtag)) {
-      return 'Хэш-тег не должен содержать спецсимволы';
+    if (!HASHTAG_REGEX.test(hashtag)) {
+      return 'Хэш-тег должен начинаться с # и содержать только буквы и цифры';
     }
     return '';
   };

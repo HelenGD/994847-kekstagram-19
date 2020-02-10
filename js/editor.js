@@ -3,8 +3,6 @@
 window.editor = (function () {
   var ESC_KEY = 27;
 
-  var EFFECT_NONE = 'none';
-
   var body = document.querySelector('body');
   var popupEditImg = document.querySelector('.img-upload__overlay');
   var openPopupEditImg = document.querySelector('#upload-file');
@@ -15,7 +13,7 @@ window.editor = (function () {
   var imgUploadPreviewEl = popupEditImg.querySelector('.img-upload__preview');
   var effectLevelValue = document.querySelector('.effect-level__value');
   var effectLevelLine = document.querySelector('.effect-level__line');
-  var currentEffect = EFFECT_NONE;
+  var currentEffect = null;
 
   var effects = {
     chrome: function (percent) {
@@ -32,9 +30,6 @@ window.editor = (function () {
     },
     heat: function (percent) {
       imgUploadPreviewEl.style.filter = 'brightness(' + (2 * percent + 1) + ')';
-    },
-    none: function () {
-      imgUploadPreviewEl.style.filter = '';
     }
   };
 
@@ -46,17 +41,21 @@ window.editor = (function () {
   };
 
   var onEffectChange = function (evt) {
-    var newCurrentEffect = evt.target.value;
-    imgUploadPreviewEl.classList.remove('effects__preview--' + currentEffect);
-    if (newCurrentEffect === EFFECT_NONE) {
-      effectLevelEl.classList.add('hidden');
-    } else {
-      effectLevelEl.classList.remove('hidden');
-      imgUploadPreviewEl.classList.add('effects__preview--' + newCurrentEffect);
+    if (currentEffect) {
+      imgUploadPreviewEl.classList.remove('effects__preview--' + currentEffect);
     }
-    currentEffect = newCurrentEffect;
-    var setEffect = effects[currentEffect];
-    setEffect(1);
+
+    if (evt.target.value !== 'none') {
+      currentEffect = evt.target.value;
+      effectLevelEl.classList.remove('hidden');
+      imgUploadPreviewEl.classList.add('effects__preview--' + currentEffect);
+      var setEffect = effects[currentEffect];
+      setEffect(1);
+    } else {
+      currentEffect = null;
+      effectLevelEl.classList.add('hidden');
+      resetEffect();
+    }
     effectLevelValue.value = 100;
   };
 
@@ -81,6 +80,10 @@ window.editor = (function () {
     evt.target.setCustomValidity(error);
   };
 
+  var resetEffect = function () {
+    imgUploadPreviewEl.style.filter = '';
+  };
+
   // Открывает попап
   var onOpenPopup = function () {
     popupEditImg.classList.remove('hidden');
@@ -95,9 +98,9 @@ window.editor = (function () {
     body.classList.remove('modal-open');
     openPopupEditImg.value = '';
 
-    effects.none();
+    resetEffect();
     imgUploadPreviewEl.classList.remove('effects__preview--' + currentEffect);
-    currentEffect = EFFECT_NONE;
+    currentEffect = null;
   };
 
   openPopupEditImg.addEventListener('change', onOpenPopup);
