@@ -23,12 +23,12 @@ window.validation = (function () {
 
   // Проверяет хэштэг на уникальность
   var checkUniqHashtag = function (hashtags) {
-    var uniqHastagsMap = {};
+    var uniqHastagsMap = [];
     for (var i = 0; i < hashtags.length; i++) {
-      if (hashtags[i] in uniqHastagsMap) {
+      if (uniqHastagsMap.includes(hashtags[i])) {
         return false;
       } else {
-        uniqHastagsMap[hashtags[i]] = true;
+        uniqHastagsMap.push(hashtags[i]);
       }
     }
     return true;
@@ -52,15 +52,18 @@ window.validation = (function () {
   };
 
   // Превращает набор хэштэгов в массив
-  var parseHashtags = function (hashtagStr) {
+  var hashtagsStringToArray = function (hashtagStr) {
     var hashtagArr = hashtagStr
     .toLowerCase()
     .split(' ');
     return hashtagArr.filter(Boolean);
   };
 
+  var validateHashtagsString = function (hashtagsString) {
+    return validateHashtags(hashtagsStringToArray(hashtagsString));
+  };
+
   return {
-    parseHashtags: parseHashtags,
-    validateHashtags: validateHashtags,
+    validateHashtagsString: validateHashtagsString,
   };
 })();

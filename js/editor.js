@@ -2,35 +2,61 @@
 
 window.editor = (function () {
   var ESC_KEY = 27;
+  var MAX_SATURATION = 1;
+  var MAX_PHOBOS = 3;
+  var MAX_HEAT = 3;
 
-  var body = document.querySelector('body');
-  var popupEditImg = document.querySelector('.img-upload__overlay');
-  var openPopupEditImg = document.querySelector('#upload-file');
-  var closePopupEditImg = document.querySelector('#upload-cancel');
-  var hashtagsInput = popupEditImg.querySelector('.text__hashtags');
-  var effectLevelEl = popupEditImg.querySelector('.effect-level');
-  var effectsRadios = popupEditImg.querySelectorAll('.effects__radio');
-  var imgUploadPreviewEl = popupEditImg.querySelector('.img-upload__preview');
-  var effectLevelValue = document.querySelector('.effect-level__value');
-  var effectLevelLine = document.querySelector('.effect-level__line');
+  var bodyEl = document.querySelector('body');
+  var popupEditImgEl = document.querySelector('.img-upload__overlay');
+  var openPopupEditImgEl = document.querySelector('#upload-file');
+  var closePopupEditImgEl = document.querySelector('#upload-cancel');
+  var hashtagsInputEl = popupEditImgEl.querySelector('.text__hashtags');
+  var effectLevelEl = popupEditImgEl.querySelector('.effect-level');
+  var effectsRadiosEl = popupEditImgEl.querySelectorAll('.effects__radio');
+  var imgUploadPreviewEl = popupEditImgEl.querySelector('.img-upload__preview');
+  var effectLevelValueEl = document.querySelector('.effect-level__value');
+  var effectLevelLineEl = document.querySelector('.effect-level__line');
   var currentEffect = null;
 
   var effects = {
-    chrome: function (percent) {
-      imgUploadPreviewEl.style.filter = 'grayscale(' + percent + ')';
+    chrome: {
+      setSaturation: function (percent) {
+        imgUploadPreviewEl.style.filter = 'grayscale(' + percent + ')';
+      },
+      className: 'effects__preview--chrome',
     },
-    sepia: function (percent) {
-      imgUploadPreviewEl.style.filter = 'sepia(' + percent + ')';
+    sepia: {
+      setSaturation: function (percent) {
+        imgUploadPreviewEl.style.filter = 'sepia(' + percent + ')';
+      },
+      className: 'effects__preview--sepia',
     },
-    marvin: function (percent) {
-      imgUploadPreviewEl.style.filter = 'invert(' + percent * 100 + '%)';
+    marvin: {
+      setSaturation: function (percent) {
+        imgUploadPreviewEl.style.filter = 'invert(' + percent * 100 + '%)';
+      },
+      className: 'effects__preview--marvin',
     },
-    phobos: function (percent) {
-      imgUploadPreviewEl.style.filter = 'blur(' + 3 * percent + 'px)';
+    phobos: {
+      setSaturation: function (percent) {
+        imgUploadPreviewEl.style.filter = 'blur(' + MAX_PHOBOS * percent + 'px)';
+      },
+      className: 'effects__preview--phobos',
     },
-    heat: function (percent) {
-      imgUploadPreviewEl.style.filter = 'brightness(' + (2 * percent + 1) + ')';
+    heat: {
+      setSaturation: function (percent) {
+        imgUploadPreviewEl.style.filter = 'brightness(' + ((MAX_HEAT - 1) * percent + 1) + ')';
+      },
+      className: 'effects__preview--heat',
     }
+  };
+
+  var showEffectLevelSlider = function () {
+    effectLevelEl.classList.remove('hidden');
+  };
+
+  var hideEffectLevelSlider = function () {
+    effectLevelEl.classList.add('hidden');
   };
 
   // Закрывает попап по нажатию на ESCAPE
@@ -42,28 +68,26 @@ window.editor = (function () {
 
   var onEffectChange = function (evt) {
     if (currentEffect) {
-      imgUploadPreviewEl.classList.remove('effects__preview--' + currentEffect);
+      imgUploadPreviewEl.classList.remove(currentEffect.className);
     }
 
-    if (evt.target.value !== 'none') {
-      currentEffect = evt.target.value;
-      effectLevelEl.classList.remove('hidden');
-      imgUploadPreviewEl.classList.add('effects__preview--' + currentEffect);
-      var setEffect = effects[currentEffect];
-      setEffect(1);
+    currentEffect = effects[evt.target.value];
+
+    if (currentEffect) {
+      showEffectLevelSlider();
+      imgUploadPreviewEl.classList.add(currentEffect.className);
+      currentEffect.setSaturation(MAX_SATURATION);
+      effectLevelValueEl.value = MAX_SATURATION * 100;
     } else {
-      currentEffect = null;
-      effectLevelEl.classList.add('hidden');
+      hideEffectLevelSlider();
       resetEffect();
     }
-    effectLevelValue.value = 100;
   };
 
   var onSaturationChange = function (evt) {
     var percent = getSaturationPercent(evt);
-    var setEffect = effects[currentEffect];
-    setEffect(percent);
-    effectLevelValue.value = percent * 100;
+    currentEffect.setSaturation(percent);
+    effectLevelValueEl.value = percent * 100;
   };
 
   var onFocusHastags = function () {
@@ -76,7 +100,7 @@ window.editor = (function () {
 
   var onInputHashtags = function (evt) {
     var value = evt.target.value;
-    var error = window.validation.validateHashtags(window.validation.parseHashtags(value));
+    var error = window.validation.validateHashtagsString(value);
     evt.target.setCustomValidity(error);
   };
 
@@ -86,30 +110,30 @@ window.editor = (function () {
 
   // Открывает попап
   var onOpenPopup = function () {
-    popupEditImg.classList.remove('hidden');
-    body.classList.add('modal-open');
+    popupEditImgEl.classList.remove('hidden');
+    bodyEl.classList.add('modal-open');
     effectLevelEl.classList.add('hidden');
-    effectLevelValue.value = 100;
+    effectLevelValueEl.value = 100;
   };
 
   // Закрывает попап
   var onClosePopup = function () {
-    popupEditImg.classList.add('hidden');
-    body.classList.remove('modal-open');
-    openPopupEditImg.value = '';
+    popupEditImgEl.classList.add('hidden');
+    bodyEl.classList.remove('modal-open');
+    openPopupEditImgEl.value = '';
 
     resetEffect();
-    imgUploadPreviewEl.classList.remove('effects__preview--' + currentEffect);
+    imgUploadPreviewEl.classList.remove(currentEffect.className);
     currentEffect = null;
   };
 
-  openPopupEditImg.addEventListener('change', onOpenPopup);
+  openPopupEditImgEl.addEventListener('change', onOpenPopup);
 
-  closePopupEditImg.addEventListener('click', onClosePopup);
+  closePopupEditImgEl.addEventListener('click', onClosePopup);
 
   // Получает проценты насыщенности
   var getSaturationPercent = function (evt) {
-    var rect = effectLevelLine.getBoundingClientRect();
+    var rect = effectLevelLineEl.getBoundingClientRect();
     var offsetX = evt.clientX - rect.left;
     var percent = offsetX / rect.width;
 
@@ -117,11 +141,11 @@ window.editor = (function () {
   };
 
   document.addEventListener('keydown', onPopupEscPress);
-  hashtagsInput.addEventListener('focus', onFocusHastags);
-  hashtagsInput.addEventListener('blur', onBlurHashtags);
-  hashtagsInput.addEventListener('input', onInputHashtags);
-  effectLevelLine.addEventListener('mouseup', onSaturationChange);
-  for (var radioIndex = 0; radioIndex < effectsRadios.length; radioIndex++) {
-    effectsRadios[radioIndex].addEventListener('change', onEffectChange);
+  hashtagsInputEl.addEventListener('focus', onFocusHastags);
+  hashtagsInputEl.addEventListener('blur', onBlurHashtags);
+  hashtagsInputEl.addEventListener('input', onInputHashtags);
+  effectLevelLineEl.addEventListener('mouseup', onSaturationChange);
+  for (var radioIndex = 0; radioIndex < effectsRadiosEl.length; radioIndex++) {
+    effectsRadiosEl[radioIndex].addEventListener('change', onEffectChange);
   }
 })();

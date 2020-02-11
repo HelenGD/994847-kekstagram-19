@@ -14,11 +14,11 @@ window.comment = (function () {
     'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
   ];
 
-  var bigPicture = document.querySelector('.big-picture');
-  var commentsCount = bigPicture.querySelector('.social__comment-count');
-  var commentsLoader = bigPicture.querySelector('.comments-loader');
-  var commentsBlock = bigPicture.querySelector('.social__comments');
-  var socialCommentEl = commentsBlock.querySelector('.social__comment');
+  var bigPictureEl = document.querySelector('.big-picture');
+  var commentsCountEl = bigPictureEl.querySelector('.social__comment-count');
+  var commentsLoaderEl = bigPictureEl.querySelector('.comments-loader');
+  var commentsBlockEl = bigPictureEl.querySelector('.social__comments');
+  var socialCommentEl = commentsBlockEl.querySelector('.social__comment');
 
   // Создает один объект comment
   var createComment = function (avatarId, message, name) {
@@ -59,16 +59,16 @@ window.comment = (function () {
   // Создает блок комментариев на основе шаблона
   var renderComments = function (comments) {
   // Прячем блоки счётчика комментариев и загрузки новых комментариев
-    commentsCount.classList.add('hidden');
-    commentsLoader.classList.add('hidden');
+    commentsCountEl.classList.add('hidden');
+    commentsLoaderEl.classList.add('hidden');
 
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < comments.length; i++) {
       var itemComment = createCommentElement(comments[i]);
       fragment.appendChild(itemComment);
     }
-    commentsBlock.innerHTML = '';
-    commentsBlock.appendChild(fragment);
+    commentsBlockEl.innerHTML = '';
+    commentsBlockEl.appendChild(fragment);
   };
 
   return {

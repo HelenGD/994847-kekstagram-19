@@ -8,7 +8,7 @@ window.photo = (function () {
   var pictureEl = document.querySelector('#picture')
     .content
     .querySelector('.picture');
-  var picturesContainer = document.querySelector('.pictures');
+  var picturesContainerEl = document.querySelector('.pictures');
 
   // Создает объект с описанием фотографии
   var createPhoto = function (id, description, likes, comments) {
@@ -62,7 +62,7 @@ window.photo = (function () {
     }
 
     // Добавляем фрагмент со всеми фото на страницу
-    picturesContainer.appendChild(fragment);
+    picturesContainerEl.appendChild(fragment);
   };
 
   var photos = createPhotos();

@@ -1,20 +1,20 @@
 'use strict';
 
 window.preview = (function () {
-  var bigPicture = document.querySelector('.big-picture');
-  var bigImage = bigPicture.querySelector('.big-picture__img');
-  var likesBigImage = bigPicture.querySelector('.likes-count');
-  var commentsBigImage = bigPicture.querySelector('.comments-count');
-  var captionBigImage = bigPicture.querySelector('.social__caption');
+  var bigPictureEl = document.querySelector('.big-picture');
+  var bigImageEl = bigPictureEl.querySelector('.big-picture__img');
+  var likesBigImageEl = bigPictureEl.querySelector('.likes-count');
+  var commentsBigImageEl = bigPictureEl.querySelector('.comments-count');
+  var captionBigImageEl = bigPictureEl.querySelector('.social__caption');
 
   // Показывает большую фотографию с лайками и комментариями
   var showBigPicture = function (currentPhoto) {
-    bigPicture.classList.remove('hidden');
+    bigPictureEl.classList.remove('hidden');
 
-    bigImage.src = currentPhoto.url;
-    likesBigImage.textContent = currentPhoto.likes;
-    commentsBigImage.textContent = currentPhoto.comments.length;
-    captionBigImage.textContent = currentPhoto.description;
+    bigImageEl.src = currentPhoto.url;
+    likesBigImageEl.textContent = currentPhoto.likes;
+    commentsBigImageEl.textContent = currentPhoto.comments.length;
+    captionBigImageEl.textContent = currentPhoto.description;
 
     window.comment.render(currentPhoto.comments);
   };
