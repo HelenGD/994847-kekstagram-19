@@ -5,6 +5,7 @@ window.editor = (function () {
   var MAX_SATURATION = 1;
   var MAX_PHOBOS = 3;
   var MAX_HEAT = 3;
+  var MIN_HEAT = 1;
 
   var bodyEl = document.querySelector('body');
   var popupEditImgEl = document.querySelector('.img-upload__overlay');
@@ -45,7 +46,7 @@ window.editor = (function () {
     },
     heat: {
       setSaturation: function (percent) {
-        imgUploadPreviewEl.style.filter = 'brightness(' + ((MAX_HEAT - 1) * percent + 1) + ')';
+        imgUploadPreviewEl.style.filter = 'brightness(' + ((MAX_HEAT - MIN_HEAT) * percent + MIN_HEAT) + ')';
       },
       className: 'effects__preview--heat',
     }
