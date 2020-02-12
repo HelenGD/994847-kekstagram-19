@@ -590,6 +590,7 @@ main {
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
           transform: translateY(-50%);
+  cursor: pointer;       
 }
 
 .effect-level__pin {
