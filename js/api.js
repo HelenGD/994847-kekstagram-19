@@ -1,6 +1,6 @@
 'use strict';
 
-window.backend = (function () {
+window.api = (function () {
   var URL = 'https://js.dump.academy/kekstagram/data';
   var TIMEOUT_IN_MS = 10000;
 
@@ -32,12 +32,7 @@ window.backend = (function () {
     xhr.send();
   }
 
-  fetchPhotos(
-      function (response) {
-        window.photo.render(response);
-      },
-      function (error) {
-        window.photo.render(error);
-      }
-  );
+  return {
+    fetchPhotos: fetchPhotos,
+  };
 })();

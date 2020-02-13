@@ -70,6 +70,12 @@ window.photo = (function () {
   // Добавляет фотографии на страницу
   // renderPhotos(photos);
 
+  window.api.fetchPhotos(
+      function (response) {
+        window.photo.render(response);
+      }
+  );
+
   return {
     create: createPhotos,
     render: renderPhotos,
