@@ -68,7 +68,7 @@ window.photo = (function () {
   var photos = createPhotos();
   // Добавляет большую фотографию на страницу;
   // Добавляет фотографии на страницу
-  renderPhotos(photos);
+  // renderPhotos(photos);
 
   return {
     create: createPhotos,
