@@ -65,7 +65,7 @@ window.photo = (function () {
     picturesContainerEl.appendChild(fragment);
   };
 
-  var photos = createPhotos();
+  // var photos = createPhotos();
   // Добавляет большую фотографию на страницу;
   // Добавляет фотографии на страницу
   // renderPhotos(photos);
