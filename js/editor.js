@@ -17,6 +17,8 @@ window.editor = (function () {
   var imgUploadPreviewEl = popupEditImgEl.querySelector('.img-upload__preview');
   var effectLevelValueEl = document.querySelector('.effect-level__value');
   var effectLevelLineEl = document.querySelector('.effect-level__line');
+  var effectLevelPinEl = document.querySelector('.effect-level__pin');
+  var depthRangeEl = document.querySelector('.effect-level__depth');
   var currentEffect = null;
 
   var effects = {
@@ -77,18 +79,29 @@ window.editor = (function () {
     if (currentEffect) {
       showEffectLevelSlider();
       imgUploadPreviewEl.classList.add(currentEffect.className);
-      currentEffect.setSaturation(MAX_SATURATION);
-      effectLevelValueEl.value = MAX_SATURATION * 100;
+      setSaturation(MAX_SATURATION);
+      setSliderPosition(MAX_SATURATION);
     } else {
       hideEffectLevelSlider();
       resetEffect();
     }
   };
 
-  var onSaturationChange = function (evt) {
-    var percent = getSaturationPercent(evt);
+  var setSaturation = function (percent) {
     currentEffect.setSaturation(percent);
     effectLevelValueEl.value = percent * 100;
+  };
+
+  var setSliderPosition = function (percent) {
+    var offset = percent * 100;
+    effectLevelPinEl.style.left = offset + '%';
+    depthRangeEl.style.width = offset + '%';
+  };
+
+  var onSaturationChange = function (evt) {
+    var percent = getSaturationPercent(evt);
+    setSaturation(percent);
+    setSliderPosition(percent);
   };
 
   var onFocusHastags = function () {
@@ -137,8 +150,25 @@ window.editor = (function () {
     var rect = effectLevelLineEl.getBoundingClientRect();
     var offsetX = evt.clientX - rect.left;
     var percent = offsetX / rect.width;
+    var roundedPercent = Math.min(1, Math.max(0, percent));
 
-    return Math.min(1, Math.max(0, percent));
+    return roundedPercent;
+  };
+
+  var onPinMouseUp = function () {
+    document.removeEventListener('mousemove', onPinMouseMove);
+    document.removeEventListener('mouseup', onPinMouseUp);
+  };
+
+  var onPinMouseMove = function (evt) {
+    var percent = getSaturationPercent(evt);
+    setSliderPosition(percent);
+    setSaturation(percent);
+  };
+
+  var onPinMouseDown = function () {
+    document.addEventListener('mouseup', onPinMouseUp);
+    document.addEventListener('mousemove', onPinMouseMove);
   };
 
   document.addEventListener('keydown', onPopupEscPress);
@@ -146,6 +176,7 @@ window.editor = (function () {
   hashtagsInputEl.addEventListener('blur', onBlurHashtags);
   hashtagsInputEl.addEventListener('input', onInputHashtags);
   effectLevelLineEl.addEventListener('mouseup', onSaturationChange);
+  effectLevelPinEl.addEventListener('mousedown', onPinMouseDown);
   for (var radioIndex = 0; radioIndex < effectsRadiosEl.length; radioIndex++) {
     effectsRadiosEl[radioIndex].addEventListener('change', onEffectChange);
   }
