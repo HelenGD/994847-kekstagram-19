@@ -19,7 +19,46 @@ window.editor = (function () {
   var effectLevelLineEl = document.querySelector('.effect-level__line');
   var effectLevelPinEl = document.querySelector('.effect-level__pin');
   var depthRangeEl = document.querySelector('.effect-level__depth');
+  var scaleControlValueEl = document.querySelector('.scale__control--value');
+  var imageUploadPreviewEl = document.querySelector('.img-upload__preview');
+  var buttonZoomOutEl = document.querySelector('.scale__control--smaller');
+  var buttonZoomInEl = document.querySelector('.scale__control--bigger');
   var currentEffect = null;
+
+  var Scale = {
+    MIN: 25,
+    MAX: 100,
+    STEP: 25
+  };
+
+  var getZoom = function () {
+    return parseInt(scaleControlValueEl.value, 10);
+  };
+
+  var onButtonZoomIn = function () {
+    var valueScale = getZoom();
+    if (valueScale < Scale.MAX) {
+      valueScale += Scale.STEP;
+    }
+    setZoom(valueScale);
+  };
+
+  buttonZoomInEl.addEventListener('click', onButtonZoomIn);
+
+  var onButtonZoomOut = function () {
+    var valueScale = getZoom();
+    if (valueScale > Scale.MIN) {
+      valueScale -= Scale.STEP;
+    }
+    setZoom(valueScale);
+  };
+
+  var setZoom = function (valueScale) {
+    scaleControlValueEl.value = valueScale + '%';
+    imageUploadPreviewEl.style.transform = 'scale(' + (valueScale / Scale.MAX) + ')';
+  };
+
+  buttonZoomOutEl.addEventListener('click', onButtonZoomOut);
 
   var effects = {
     chrome: {
@@ -128,6 +167,7 @@ window.editor = (function () {
     bodyEl.classList.add('modal-open');
     effectLevelEl.classList.add('hidden');
     effectLevelValueEl.value = 100;
+    setZoom(Scale.MAX);
   };
 
   // Закрывает попап
