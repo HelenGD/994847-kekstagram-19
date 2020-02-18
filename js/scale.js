@@ -45,7 +45,6 @@ window.scale = (function () {
   buttonZoomOutEl.addEventListener('click', onButtonZoomOut);
 
   return {
-    setZoom: setZoom,
     reset: reset
   };
 })();

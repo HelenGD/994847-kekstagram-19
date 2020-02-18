@@ -8,7 +8,7 @@ window.effect = (function () {
 
   var effectLevelEl = document.querySelector('.effect-level');
   var effectsRadiosEl = document.querySelectorAll('.effects__radio');
-  var imgUploadPreviewEl = document.querySelector('.img-upload__preview');
+  var imgPreviewEl = document.querySelector('.img-upload__preview img');
   var effectLevelValueEl = document.querySelector('.effect-level__value');
   var effectLevelLineEl = document.querySelector('.effect-level__line');
   var effectLevelPinEl = document.querySelector('.effect-level__pin');
@@ -18,31 +18,31 @@ window.effect = (function () {
   var effects = {
     chrome: {
       setSaturation: function (percent) {
-        imgUploadPreviewEl.style.filter = 'grayscale(' + percent + ')';
+        imgPreviewEl.style.filter = 'grayscale(' + percent + ')';
       },
       className: 'effects__preview--chrome',
     },
     sepia: {
       setSaturation: function (percent) {
-        imgUploadPreviewEl.style.filter = 'sepia(' + percent + ')';
+        imgPreviewEl.style.filter = 'sepia(' + percent + ')';
       },
       className: 'effects__preview--sepia',
     },
     marvin: {
       setSaturation: function (percent) {
-        imgUploadPreviewEl.style.filter = 'invert(' + percent * 100 + '%)';
+        imgPreviewEl.style.filter = 'invert(' + percent * 100 + '%)';
       },
       className: 'effects__preview--marvin',
     },
     phobos: {
       setSaturation: function (percent) {
-        imgUploadPreviewEl.style.filter = 'blur(' + MAX_PHOBOS * percent + 'px)';
+        imgPreviewEl.style.filter = 'blur(' + MAX_PHOBOS * percent + 'px)';
       },
       className: 'effects__preview--phobos',
     },
     heat: {
       setSaturation: function (percent) {
-        imgUploadPreviewEl.style.filter = 'brightness(' + ((MAX_HEAT - MIN_HEAT) * percent + MIN_HEAT) + ')';
+        imgPreviewEl.style.filter = 'brightness(' + ((MAX_HEAT - MIN_HEAT) * percent + MIN_HEAT) + ')';
       },
       className: 'effects__preview--heat',
     }
@@ -56,20 +56,22 @@ window.effect = (function () {
     effectLevelEl.classList.add('hidden');
   };
 
-  var onChange = function (evt) {
+  var removeCurrentEffect = function () {
     if (currentEffect) {
-      imgUploadPreviewEl.classList.remove(currentEffect.className);
+      imgPreviewEl.classList.remove(currentEffect.className);
     }
+  };
 
+  var onChange = function (evt) {
+    removeCurrentEffect();
     currentEffect = effects[evt.target.value];
 
     if (currentEffect) {
       showLevelSlider();
-      imgUploadPreviewEl.classList.add(currentEffect.className);
+      imgPreviewEl.classList.add(currentEffect.className);
       setSaturation(MAX_SATURATION);
       setSliderPosition(MAX_SATURATION);
     } else {
-      hideLevelSlider();
       reset();
     }
   };
@@ -92,11 +94,9 @@ window.effect = (function () {
   };
 
   var reset = function () {
-    if (currentEffect) {
-      imgUploadPreviewEl.classList.remove(currentEffect.className);
-    }
-    imgUploadPreviewEl.style.filter = '';
-    effectLevelEl.classList.add('hidden');
+    removeCurrentEffect();
+    imgPreviewEl.style.filter = '';
+    hideLevelSlider();
     effectLevelValueEl.value = 100;
     currentEffect = null;
   };
