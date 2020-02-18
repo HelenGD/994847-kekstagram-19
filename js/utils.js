@@ -1,6 +1,7 @@
 'use strict';
 
 window.utils = (function () {
+  var ESC_KEY = 27;
 
   // Генерирует случайное число от min до max
   var getRandomValue = function (min, max) {
@@ -10,6 +11,7 @@ window.utils = (function () {
   };
 
   return {
-    getRandomValue: getRandomValue
+    getRandomValue: getRandomValue,
+    ESC_KEY: ESC_KEY
   };
 })();
