@@ -1,10 +1,12 @@
 'use strict';
 
-window.validation = (function () {
+window.hashtags = (function () {
   var HASHTAGS_MIN_LENGTH = 2;
   var HASHTAGS_MAX_LENGTH = 20;
   var HASHTAGS_MAX_COUNT = 5;
   var HASHTAG_REGEX = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
+
+  var hashtagsInputEl = document.querySelector('.text__hashtags');
 
   // Валидирует один хэштэг
   var validateHashtag = function (hashtag) {
@@ -35,7 +37,8 @@ window.validation = (function () {
   };
 
   // Валидирует хэштэги
-  var validateHashtags = function (hashtags) {
+  var validate = function (hashtagsString) {
+    var hashtags = toArray(hashtagsString);
     for (var i = 0; i < hashtags.length; i++) {
       var error = validateHashtag(hashtags[i]);
       if (error) {
@@ -52,18 +55,25 @@ window.validation = (function () {
   };
 
   // Превращает набор хэштэгов в массив
-  var hashtagsStringToArray = function (hashtagStr) {
+  var toArray = function (hashtagStr) {
     var hashtagArr = hashtagStr
     .toLowerCase()
     .split(' ');
     return hashtagArr.filter(Boolean);
   };
 
-  var validateHashtagsString = function (hashtagsString) {
-    return validateHashtags(hashtagsStringToArray(hashtagsString));
+  var onKeyDown = function (evt) {
+    if (evt.keyCode === window.utils.ESC_KEY) {
+      evt.stopPropagation();
+    }
   };
 
-  return {
-    validateHashtagsString: validateHashtagsString,
+  var onInput = function (evt) {
+    var value = evt.target.value;
+    var error = validate(value);
+    evt.target.setCustomValidity(error);
   };
+
+  hashtagsInputEl.addEventListener('keydown', onKeyDown);
+  hashtagsInputEl.addEventListener('input', onInput);
 })();

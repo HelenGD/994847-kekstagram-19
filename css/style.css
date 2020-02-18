@@ -536,6 +536,9 @@ main {
   height: 600px;
 
   background-color: #ffffff;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .img-upload__preview img {
