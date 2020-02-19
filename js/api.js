@@ -2,37 +2,62 @@
 
 window.api = (function () {
   var URL = 'https://js.dump.academy/kekstagram/data';
+  var UPLOAD = 'https://js.dump.academy/kekstagram';
   var TIMEOUT_IN_MS = 10000;
 
-  function fetchPhotos(onSuccess, onError) {
+  var fetch = function (options) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       if (xhr.status < 400) {
-        onSuccess(xhr.response);
+        options.onSuccess(xhr.response);
       } else if (xhr.status < 500) {
-        onError('Неверный формат данных');
+        options.onError('Неверный формат данных');
       } else {
-        onError('Упс! Что-то пошло не так');
+        options.onError('Упс! Что-то пошло не так');
       }
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      options.onError('Произошла ошибка соединения');
     });
 
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      options.onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIMEOUT_IN_MS;
 
-    xhr.open('GET', URL);
-    xhr.send();
+    xhr.open(options.method, options.url);
+    xhr.send(options.data);
+  };
+
+  function fetchPhotos(onSuccess, onError) {
+    fetch(
+        {
+          method: 'GET',
+          url: URL,
+          onSuccess: onSuccess,
+          onError: onError
+        }
+    );
+  }
+
+  function sendPhotos(data, onSuccess, onError) {
+    fetch(
+        {
+          method: 'POST',
+          data: data,
+          url: UPLOAD,
+          onSuccess: onSuccess,
+          onError: onError
+        }
+    );
   }
 
   return {
     fetchPhotos: fetchPhotos,
+    sendPhotos: sendPhotos
   };
 })();
