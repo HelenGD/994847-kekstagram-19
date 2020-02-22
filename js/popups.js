@@ -1,6 +1,6 @@
 'use strict';
 
-window.main = (function () {
+window.popups = (function () {
   var mainBlockEl = document.querySelector('main');
   var templateSuccessEl = document.querySelector('#success').
     content.querySelector('.success');
@@ -56,3 +56,4 @@ window.main = (function () {
     showLoadError: showLoadError
   };
 })();
+

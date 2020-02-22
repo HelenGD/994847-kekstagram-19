@@ -37,7 +37,7 @@ window.editor = (function () {
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
-    window.backend.sendPhoto(new FormData(formEl), window.main.showLoadSuccess, window.main.showLoadError);
+    window.backend.sendPhoto(new FormData(formEl), window.popups.showLoadSuccess, window.popups.showLoadError);
     onClosePopup();
   };
 
