@@ -1,21 +1,19 @@
 'use strict';
 
-window.api = (function () {
-  var URL = 'https://js.dump.academy/kekstagram/data';
+window.backend = (function () {
+  var DOWNLOAD = 'https://js.dump.academy/kekstagram/data';
   var UPLOAD = 'https://js.dump.academy/kekstagram';
   var TIMEOUT_IN_MS = 10000;
 
-  var fetch = function (options) {
+  var load = function (options) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status < 400) {
+      if (xhr.status === 200) {
         options.onSuccess(xhr.response);
-      } else if (xhr.status < 500) {
-        options.onError('Неверный формат данных');
       } else {
-        options.onError('Упс! Что-то пошло не так');
+        options.onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
 
@@ -33,19 +31,20 @@ window.api = (function () {
     xhr.send(options.data);
   };
 
-  function fetchPhotos(onSuccess, onError) {
-    fetch(
+  function loadPhotos(onSuccess, onError) {
+    load(
         {
           method: 'GET',
-          url: URL,
+          url: DOWNLOAD,
+          data: null,
           onSuccess: onSuccess,
           onError: onError
         }
     );
   }
 
-  function sendPhotos(data, onSuccess, onError) {
-    fetch(
+  function sendPhoto(data, onSuccess, onError) {
+    load(
         {
           method: 'POST',
           data: data,
@@ -57,7 +56,7 @@ window.api = (function () {
   }
 
   return {
-    fetchPhotos: fetchPhotos,
-    sendPhotos: sendPhotos
+    loadPhotos: loadPhotos,
+    sendPhoto: sendPhoto
   };
 })();

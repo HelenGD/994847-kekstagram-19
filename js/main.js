@@ -41,18 +41,18 @@ window.main = (function () {
     document.addEventListener('keydown', onPopupEscPress);
   };
 
-  var openPopupSuccess = function () {
+  var showLoadSuccess = function () {
     var popupSuccessEl = templateSuccessEl.cloneNode(true);
     openPopup(popupSuccessEl);
   };
 
-  var openPopupError = function () {
+  var showLoadError = function () {
     var popupErrorEl = templateErrorEl.cloneNode(true);
     openPopup(popupErrorEl);
   };
 
   return {
-    openPopupError: openPopupError,
-    openPopupSuccess: openPopupSuccess
+    showLoadSuccess: showLoadSuccess,
+    showLoadError: showLoadError
   };
 })();
