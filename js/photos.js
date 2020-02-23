@@ -45,7 +45,7 @@ window.photos = (function () {
     // code
   };
 
-  window.api.fetchPhotos(
+  window.backend.loadPhotos(
       onLoadSuccess,
       onLoadError
   );
