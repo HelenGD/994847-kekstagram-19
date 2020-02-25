@@ -9,7 +9,6 @@ window.editor = (function () {
   var hashtagsInputEl = document.querySelector('.text__hashtags');
   var descriptionInputEl = document.querySelector('.text__description');
 
-
   // Закрывает попап по нажатию на ESCAPE
   var onPopupEscPress = function (evt) {
     if (evt.keyCode === window.utils.ESC_KEY) {
@@ -32,6 +31,7 @@ window.editor = (function () {
     popupEditImgEl.classList.add('hidden');
     bodyEl.classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupEscPress);
+    hashtagsInputEl.style.border = '2px solid transparent';
     resetForm();
   };
 

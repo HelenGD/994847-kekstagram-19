@@ -8,6 +8,7 @@ window.hashtags = (function () {
 
   var hashtagsInputEl = document.querySelector('.text__hashtags');
   var commentEl = document.querySelector('.text__description');
+  var btnSubmitEl = document.querySelector('.img-upload__submit');
 
   // Валидирует один хэштэг
   var validateHashtag = function (hashtag) {
@@ -50,7 +51,7 @@ window.hashtags = (function () {
       return 'Нельзя указать больше пяти хэш-тегов';
     }
     if (!checkUniqHashtag(hashtags)) {
-      return 'один и тот же хэш-тег не может быть использован дважды';
+      return 'Один и тот же хэш-тег не может быть использован дважды';
     }
     return '';
   };
@@ -75,7 +76,23 @@ window.hashtags = (function () {
     evt.target.setCustomValidity(error);
   };
 
+  var createErrorBorder = function (error) {
+    if (error) {
+      hashtagsInputEl.style.border = '2px solid red';
+    } else {
+      hashtagsInputEl.style.border = '';
+    }
+  };
+
+  btnSubmitEl.addEventListener('click', function () {
+    var error = validate(hashtagsInputEl.value);
+    createErrorBorder(error);
+  });
+
   commentEl.addEventListener('keydown', onKeyDown);
   hashtagsInputEl.addEventListener('keydown', onKeyDown);
   hashtagsInputEl.addEventListener('input', onInput);
+  return {
+    createErrorBorder: createErrorBorder
+  };
 })();

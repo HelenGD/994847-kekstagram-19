@@ -1,7 +1,7 @@
 'use strict';
 
 window.preview = (function () {
-
+  var DISPLAY_COMMENTS_COUNT = 5;
   var bigPictureEl = document.querySelector('.big-picture');
   var bigImageEl = bigPictureEl.querySelector('.big-picture__img img');
   var likesBigImageEl = bigPictureEl.querySelector('.likes-count');
@@ -10,6 +10,7 @@ window.preview = (function () {
   var buttonEl = document.querySelector('.big-picture__cancel');
   var picturesContainerEl = document.querySelector('.pictures');
   var commentEl = document.querySelector('.social__footer-text');
+  var commentsLoaderEl = bigPictureEl.querySelector('.comments-loader');
 
   // Показывает большую фотографию с лайками и комментариями
   var showBigPicture = function (currentPhoto) {
@@ -19,13 +20,14 @@ window.preview = (function () {
     commentsBigImageEl.textContent = currentPhoto.comments.length;
     captionBigImageEl.textContent = currentPhoto.description;
 
-    window.comment.render(currentPhoto.comments);
+    window.comment.render(currentPhoto.comments.slice(0, DISPLAY_COMMENTS_COUNT));
     openBigPicture();
   };
 
   var openBigPicture = function () {
     bigPictureEl.classList.remove('hidden');
     document.addEventListener('keydown', onPopupEscPress);
+    commentsLoaderEl.addEventListener('click', window.comment.onLoaderClick);
   };
 
   var closeBigPicture = function () {
@@ -58,7 +60,6 @@ window.preview = (function () {
   });
 
   commentEl.addEventListener('keydown', onKeyDown);
-
 
   return {
     showBigPicture: showBigPicture,
