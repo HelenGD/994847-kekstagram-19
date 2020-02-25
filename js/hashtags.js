@@ -7,6 +7,7 @@ window.hashtags = (function () {
   var HASHTAG_REGEX = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
 
   var hashtagsInputEl = document.querySelector('.text__hashtags');
+  var commentEl = document.querySelector('.text__description');
 
   // Валидирует один хэштэг
   var validateHashtag = function (hashtag) {
@@ -74,6 +75,7 @@ window.hashtags = (function () {
     evt.target.setCustomValidity(error);
   };
 
+  commentEl.addEventListener('keydown', onKeyDown);
   hashtagsInputEl.addEventListener('keydown', onKeyDown);
   hashtagsInputEl.addEventListener('input', onInput);
 })();

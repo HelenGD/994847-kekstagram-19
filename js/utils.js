@@ -2,6 +2,7 @@
 
 window.utils = (function () {
   var ESC_KEY = 27;
+  var ENTER_KEY = 13;
 
   // Генерирует случайное число от min до max
   var getRandomValue = function (min, max) {
@@ -10,8 +11,19 @@ window.utils = (function () {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+  var getRandomArray = function (arr, length) {
+    return arr
+      .slice(0)
+      .sort(function () {
+        return Math.random() - 0.5;
+      })
+      .splice(0, length);
+  };
+
   return {
+    getRandomArray: getRandomArray,
     getRandomValue: getRandomValue,
-    ESC_KEY: ESC_KEY
+    ESC_KEY: ESC_KEY,
+    ENTER_KEY: ENTER_KEY
   };
 })();

@@ -58,9 +58,6 @@ window.comment = (function () {
 
   // Создает блок комментариев на основе шаблона
   var renderComments = function (comments) {
-  // Прячем блоки счётчика комментариев и загрузки новых комментариев
-    commentsCountEl.classList.add('hidden');
-    commentsLoaderEl.classList.add('hidden');
 
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < comments.length; i++) {
