@@ -93,7 +93,7 @@ window.effect = (function () {
     setSliderPosition(percent);
   };
 
-  var reset = function () {   
+  var reset = function () {
     onPinMouseUp();
     effectLevelLineEl.removeEventListener('mouseup', onSaturationChange);
     effectLevelPinEl.removeEventListener('mousedown', onPinMouseDown);
