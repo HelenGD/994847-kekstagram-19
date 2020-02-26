@@ -8,6 +8,7 @@ window.editor = (function () {
   var formEl = document.querySelector('.img-upload__form');
   var hashtagsInputEl = document.querySelector('.text__hashtags');
   var descriptionInputEl = document.querySelector('.text__description');
+  var imgPreviewEl = document.querySelector('.img-upload__preview img');
 
   // Закрывает попап по нажатию на ESCAPE
   var onPopupEscPress = function (evt) {
@@ -20,6 +21,7 @@ window.editor = (function () {
   var onOpenPopup = function () {
     popupEditImgEl.classList.remove('hidden');
     window.upload.setFileLoad();
+    imgPreviewEl.src = 'img/upload-default-image.jpg';
     bodyEl.classList.add('modal-open');
     window.scale.reset();
     window.effect.reset();
