@@ -31,7 +31,7 @@ window.backend = (function () {
     xhr.send(options.data);
   };
 
-  function loadPhotos(onSuccess, onError) {
+  var loadPhotos = function (onSuccess, onError) {
     load(
         {
           method: 'GET',
@@ -41,9 +41,9 @@ window.backend = (function () {
           onError: onError
         }
     );
-  }
+  };
 
-  function sendPhoto(data, onSuccess, onError) {
+  var sendPhoto = function (data, onSuccess, onError) {
     load(
         {
           method: 'POST',
@@ -53,7 +53,7 @@ window.backend = (function () {
           onError: onError
         }
     );
-  }
+  };
 
   return {
     loadPhotos: loadPhotos,

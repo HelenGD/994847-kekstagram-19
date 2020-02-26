@@ -1,34 +1,32 @@
 'use strict';
+
 window.comment = (function () {
   var bigPictureEl = document.querySelector('.big-picture');
   var commentsBlockEl = bigPictureEl.querySelector('.social__comments');
   var socialCommentEl = commentsBlockEl.querySelector('.social__comment');
 
-  // Создает один комментарий на основе шаблона
   var createElement = function (comment) {
     var commentEl = socialCommentEl.cloneNode(true);
-    var commentPicture = commentEl.querySelector('.social__picture');
-    var commentText = commentEl.querySelector('.social__text');
+    var commentPictureEl = commentEl.querySelector('.social__picture');
+    var commentTextEl = commentEl.querySelector('.social__text');
 
-    commentPicture.src = comment.avatar;
-    commentPicture.alt = comment.name;
-    commentText.textContent = comment.message;
+    commentPictureEl.src = comment.avatar;
+    commentPictureEl.alt = comment.name;
+    commentTextEl.textContent = comment.message;
     return commentEl;
   };
 
-  // Создает блок комментариев на основе шаблона
   var render = function (comments) {
-
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < comments.length; i++) {
       var itemComment = createElement(comments[i]);
       fragment.appendChild(itemComment);
     }
-    commentsBlockEl.innerHTML = '';
+    commentsBlockEl.textContent = '';
     commentsBlockEl.appendChild(fragment);
   };
 
   return {
-    render: render,
+    render: render
   };
 })();

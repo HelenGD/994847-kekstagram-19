@@ -4,9 +4,10 @@ window.scale = (function () {
   var MIN = 25;
   var MAX = 100;
   var STEP = 25;
+  var INITIAL_VALUE = 100;
 
   var scaleControlValueEl = document.querySelector('.scale__control--value');
-  var imageUploadPreviewEl = document.querySelector('.img-upload__preview');
+  var imgUploadPreviewEl = document.querySelector('.img-upload__preview');
   var buttonZoomOutEl = document.querySelector('.scale__control--smaller');
   var buttonZoomInEl = document.querySelector('.scale__control--bigger');
 
@@ -32,17 +33,22 @@ window.scale = (function () {
 
   var setValue = function (valueScale) {
     scaleControlValueEl.value = valueScale + '%';
-    imageUploadPreviewEl.style.transform = 'scale(' + (valueScale / MAX) + ')';
+    imgUploadPreviewEl.style.transform = 'scale(' + (valueScale / INITIAL_VALUE) + ')';
   };
 
   var reset = function () {
-    setValue(MAX);
+    buttonZoomInEl.removeEventListener('click', onButtonZoomInPressed);
+    buttonZoomOutEl.removeEventListener('click', onButtonZoomOutPressed);
   };
 
-  buttonZoomInEl.addEventListener('click', onButtonZoomInPressed);
-  buttonZoomOutEl.addEventListener('click', onButtonZoomOutPressed);
+  var init = function () {
+    setValue(MAX);
+    buttonZoomInEl.addEventListener('click', onButtonZoomInPressed);
+    buttonZoomOutEl.addEventListener('click', onButtonZoomOutPressed);
+  };
 
   return {
+    init: init,
     reset: reset
   };
 })();

@@ -2,27 +2,26 @@
 
 window.preview = (function () {
   var DISPLAY_COMMENTS_COUNT = 5;
-  var page = 0;
-  var currentComments = [];
+  var bodyEl = document.querySelector('body');
   var bigPictureEl = document.querySelector('.big-picture');
-  var bigImageEl = bigPictureEl.querySelector('.big-picture__img img');
-  var likesBigImageEl = bigPictureEl.querySelector('.likes-count');
-  var commentsBigImageEl = bigPictureEl.querySelector('.comments-count');
-  var captionBigImageEl = bigPictureEl.querySelector('.social__caption');
+  var bigImgEl = bigPictureEl.querySelector('.big-picture__img img');
+  var likesBigImgEl = bigPictureEl.querySelector('.likes-count');
+  var commentsBigImgEl = bigPictureEl.querySelector('.comments-count');
+  var captionBigImgEl = bigPictureEl.querySelector('.social__caption');
   var buttonEl = document.querySelector('.big-picture__cancel');
-  var picturesContainerEl = document.querySelector('.pictures');
   var commentEl = document.querySelector('.social__footer-text');
   var commentsLoaderEl = bigPictureEl.querySelector('.comments-loader');
   var commentsCountEl = bigPictureEl.querySelector('.social__comment-count');
+  var page = 0;
+  var currentComments = [];
 
-  // Показывает большую фотографию с лайками и комментариями
   var showBigPicture = function (currentPhoto) {
     page = 0;
     currentComments = currentPhoto.comments;
-    bigImageEl.src = currentPhoto.url;
-    likesBigImageEl.textContent = currentPhoto.likes;
-    commentsBigImageEl.textContent = currentPhoto.comments.length;
-    captionBigImageEl.textContent = currentPhoto.description;
+    bigImgEl.src = currentPhoto.url;
+    likesBigImgEl.textContent = currentPhoto.likes;
+    commentsBigImgEl.textContent = currentPhoto.comments.length;
+    captionBigImgEl.textContent = currentPhoto.description;
 
     var commentsOnPage = getNextComments();
     window.comment.render(commentsOnPage);
@@ -40,13 +39,20 @@ window.preview = (function () {
 
   var openBigPicture = function () {
     bigPictureEl.classList.remove('hidden');
+    bodyEl.classList.add('modal-open');
     document.addEventListener('keydown', onPopupEscPress);
-    commentsLoaderEl.addEventListener('click', window.comment.onLoaderClick);
+    buttonEl.addEventListener('click', onButtonCloseClick);
+    commentEl.addEventListener('keydown', onKeyDown);
+    commentsLoaderEl.addEventListener('click', onCommentsLoaderClick);
   };
 
   var closeBigPicture = function () {
     bigPictureEl.classList.add('hidden');
+    bodyEl.classList.remove('modal-open');
     document.removeEventListener('keydown', onPopupEscPress);
+    buttonEl.removeEventListener('click', onButtonCloseClick);
+    commentEl.removeEventListener('keydown', onKeyDown);
+    commentsLoaderEl.removeEventListener('click', onCommentsLoaderClick);
   };
 
   var onPopupEscPress = function (evt) {
@@ -61,39 +67,33 @@ window.preview = (function () {
     }
   };
 
-  picturesContainerEl.addEventListener('keydown', function (evt) {
-    var isKeyEnter = evt.keyCode === window.utils.ENTER_KEY;
-    var isPictureEl = evt.target.classList.contains('picture');
-    if (isKeyEnter && isPictureEl) {
-      openBigPicture();
-    }
-  });
-
-  var isLastPage = function () {
-    return currentComments.length <= DISPLAY_COMMENTS_COUNT * page;
+  var getCommentsCountOnPage = function () {
+    return DISPLAY_COMMENTS_COUNT * page;
   };
 
   var getNextComments = function () {
     page += 1;
-    return currentComments.slice(0, DISPLAY_COMMENTS_COUNT * page);
+    return currentComments.slice(0, getCommentsCountOnPage());
   };
 
-  buttonEl.addEventListener('click', function () {
+  var isLastPage = function () {
+    return currentComments.length <= getCommentsCountOnPage();
+  };
+
+  var onButtonCloseClick = function () {
     closeBigPicture();
-  });
+  };
 
-  commentEl.addEventListener('keydown', onKeyDown);
-
-  commentsLoaderEl.addEventListener('click', function () {
+  var onCommentsLoaderClick = function () {
     var commentsOnPage = getNextComments();
-    window.comment.render(getNextComments());
+    window.comment.render(commentsOnPage);
 
     if (isLastPage()) {
       commentsLoaderEl.classList.add('hidden');
     }
 
     setNumberCommentsString(commentsOnPage);
-  });
+  };
 
   return {
     showBigPicture: showBigPicture,

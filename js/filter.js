@@ -1,9 +1,9 @@
 'use strict';
 
 window.filter = (function () {
-  var buttons = document.querySelectorAll('.img-filters__button');
-  var types = {
-    0: 'default',
+  var buttonsEl = document.querySelectorAll('.img-filters__button');
+  var type = {
+    0: 'initial',
     1: 'random',
     2: 'discussed'
   };
@@ -12,13 +12,13 @@ window.filter = (function () {
 
   var fireCallbacks = function () {
     callbacks.forEach(function (callback) {
-      callback(types[currentButtonIndex]);
+      callback(type[currentButtonIndex]);
     });
   };
 
-  buttons.forEach(function (buttonEl, index) {
+  buttonsEl.forEach(function (buttonEl, index) {
     buttonEl.addEventListener('click', function (evt) {
-      buttons[currentButtonIndex].classList.remove('img-filters__button--active');
+      buttonsEl[currentButtonIndex].classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
       currentButtonIndex = index;
 

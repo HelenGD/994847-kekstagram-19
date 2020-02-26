@@ -6,9 +6,22 @@ window.upload = (function () {
 
   var imgPreviewEl = document.querySelector('.img-upload__preview img');
   var effectsPreviewEl = document.querySelectorAll('.effects__preview');
-  var openPopupEditImgEl = document.querySelector('#upload-file');
+  var openPopupEditImgEl = document.querySelector('.img-upload__input');
 
-  var setFileLoad = function () {
+  var setPreviews = function (src) {
+    imgPreviewEl.src = src;
+    effectsPreviewEl.forEach(function (item) {
+      item.style.backgroundImage = 'url(' + src + ')';
+    });
+  };
+
+  var reset = function () {
+    setPreviews('img/upload-default-image.jpg');
+  };
+
+  var sendNewImg = function () {
+    reset();
+
     var file = openPopupEditImgEl.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -17,19 +30,12 @@ window.upload = (function () {
     });
 
     if (matches) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        imgPreviewEl.src = reader.result;
-        effectsPreviewEl.forEach(function (item) {
-          item.style.backgroundImage = 'url(' + reader.result + ')';
-        });
-      });
-
-      reader.readAsDataURL(file);
+      var objectUrl = URL.createObjectURL(file);
+      setPreviews(objectUrl);
     }
   };
+
   return {
-    setFileLoad: setFileLoad
+    sendNewImg: sendNewImg,
   };
 })();

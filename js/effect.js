@@ -93,15 +93,15 @@ window.effect = (function () {
     setSliderPosition(percent);
   };
 
-  var reset = function () {
-    removeCurrentEffect();
-    imgPreviewEl.style.filter = '';
-    hideLevelSlider();
-    effectLevelValueEl.value = 100;
-    currentEffect = null;
+  var reset = function () {   
+    onPinMouseUp();
+    effectLevelLineEl.removeEventListener('mouseup', onSaturationChange);
+    effectLevelPinEl.removeEventListener('mousedown', onPinMouseDown);
+    for (var radioIndex = 0; radioIndex < effectsRadiosEl.length; radioIndex++) {
+      effectsRadiosEl[radioIndex].removeEventListener('change', onChange);
+    }
   };
 
-  // Получает проценты насыщенности
   var getSaturationPercent = function (evt) {
     var rect = effectLevelLineEl.getBoundingClientRect();
     var offsetX = evt.clientX - rect.left;
@@ -121,13 +121,22 @@ window.effect = (function () {
     document.addEventListener('mousemove', onSaturationChange);
   };
 
-  effectLevelLineEl.addEventListener('mouseup', onSaturationChange);
-  effectLevelPinEl.addEventListener('mousedown', onPinMouseDown);
-  for (var radioIndex = 0; radioIndex < effectsRadiosEl.length; radioIndex++) {
-    effectsRadiosEl[radioIndex].addEventListener('change', onChange);
-  }
+  var init = function () {
+    removeCurrentEffect();
+    imgPreviewEl.style.filter = '';
+    hideLevelSlider();
+    effectLevelValueEl.value = 100;
+    currentEffect = null;
+
+    effectLevelLineEl.addEventListener('mouseup', onSaturationChange);
+    effectLevelPinEl.addEventListener('mousedown', onPinMouseDown);
+    for (var radioIndex = 0; radioIndex < effectsRadiosEl.length; radioIndex++) {
+      effectsRadiosEl[radioIndex].addEventListener('change', onChange);
+    }
+  };
 
   return {
+    init: init,
     reset: reset
   };
 })();

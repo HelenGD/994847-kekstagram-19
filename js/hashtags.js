@@ -10,7 +10,6 @@ window.hashtags = (function () {
   var commentEl = document.querySelector('.text__description');
   var btnSubmitEl = document.querySelector('.img-upload__submit');
 
-  // Валидирует один хэштэг
   var validateHashtag = function (hashtag) {
     if (hashtag.length < HASHTAGS_MIN_LENGTH) {
       return 'Минимальная длина одного хэш-тега 2 символа, включая решётку';
@@ -25,7 +24,6 @@ window.hashtags = (function () {
     return '';
   };
 
-  // Проверяет хэштэг на уникальность
   var checkUniqHashtag = function (hashtags) {
     var uniqHastagsMap = [];
     for (var i = 0; i < hashtags.length; i++) {
@@ -38,7 +36,6 @@ window.hashtags = (function () {
     return true;
   };
 
-  // Валидирует хэштэги
   var validate = function (hashtagsString) {
     var hashtags = toArray(hashtagsString);
     for (var i = 0; i < hashtags.length; i++) {
@@ -56,12 +53,11 @@ window.hashtags = (function () {
     return '';
   };
 
-  // Превращает набор хэштэгов в массив
   var toArray = function (hashtagStr) {
-    var hashtagArr = hashtagStr
+    var hashtags = hashtagStr
     .toLowerCase()
     .split(' ');
-    return hashtagArr.filter(Boolean);
+    return hashtags.filter(Boolean);
   };
 
   var onKeyDown = function (evt) {
@@ -74,25 +70,42 @@ window.hashtags = (function () {
     var value = evt.target.value;
     var error = validate(value);
     evt.target.setCustomValidity(error);
+    hideBorderError();
   };
 
-  var createErrorBorder = function (error) {
+  var showBorderError = function () {
+    hashtagsInputEl.style.border = '2px solid red';
+  };
+
+  var hideBorderError = function () {
+    hashtagsInputEl.style.border = '';
+  };
+
+  var onButtonSubmitClick = function () {
+    var error = validate(hashtagsInputEl.value);
     if (error) {
-      hashtagsInputEl.style.border = '2px solid red';
+      showBorderError();
     } else {
-      hashtagsInputEl.style.border = '';
+      hideBorderError();
     }
   };
 
-  btnSubmitEl.addEventListener('click', function () {
-    var error = validate(hashtagsInputEl.value);
-    createErrorBorder(error);
-  });
+  var init = function () {
+    commentEl.addEventListener('keydown', onKeyDown);
+    btnSubmitEl.addEventListener('click', onButtonSubmitClick);
+    hashtagsInputEl.addEventListener('keydown', onKeyDown);
+    hashtagsInputEl.addEventListener('input', onInput);
+  };
 
-  commentEl.addEventListener('keydown', onKeyDown);
-  hashtagsInputEl.addEventListener('keydown', onKeyDown);
-  hashtagsInputEl.addEventListener('input', onInput);
+  var reset = function () {
+    commentEl.removeEventListener('keydown', onKeyDown);
+    btnSubmitEl.removeEventListener('click', onButtonSubmitClick);
+    hashtagsInputEl.removeEventListener('keydown', onKeyDown);
+    hashtagsInputEl.removeEventListener('input', onInput);
+  };
+
   return {
-    createErrorBorder: createErrorBorder
+    reset: reset,
+    init: init
   };
 })();
