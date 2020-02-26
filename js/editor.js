@@ -19,6 +19,7 @@ window.editor = (function () {
   // Открывает попап
   var onOpenPopup = function () {
     popupEditImgEl.classList.remove('hidden');
+    window.upload.setFileLoad();
     bodyEl.classList.add('modal-open');
     window.scale.reset();
     window.effect.reset();

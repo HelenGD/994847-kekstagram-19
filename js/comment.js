@@ -1,8 +1,6 @@
 'use strict';
 window.comment = (function () {
   var bigPictureEl = document.querySelector('.big-picture');
-  // var commentsCountEl = bigPictureEl.querySelector('.social__comment-count');
-  // var commentsLoaderEl = bigPictureEl.querySelector('.comments-loader');
   var commentsBlockEl = bigPictureEl.querySelector('.social__comments');
   var socialCommentEl = commentsBlockEl.querySelector('.social__comment');
 
