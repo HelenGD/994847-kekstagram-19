@@ -21,7 +21,6 @@ window.filter = (function () {
       buttonsEl[currentButtonIndex].classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
       currentButtonIndex = index;
-
       fireCallbacks();
     });
   });

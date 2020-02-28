@@ -19,7 +19,7 @@ window.upload = (function () {
     setPreviews('img/upload-default-image.jpg');
   };
 
-  var sendNewImg = function () {
+  var addNewImg = function () {
     reset();
 
     var file = openPopupEditImgEl.files[0];
@@ -36,6 +36,6 @@ window.upload = (function () {
   };
 
   return {
-    sendNewImg: sendNewImg,
+    addNewImg: addNewImg,
   };
 })();

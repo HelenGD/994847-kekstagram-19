@@ -28,7 +28,10 @@ window.preview = (function () {
 
     if (!isLastPage()) {
       commentsLoaderEl.classList.remove('hidden');
+    } else {
+      commentsLoaderEl.classList.add('hidden');
     }
+
     setNumberCommentsString(commentsOnPage);
     openBigPicture();
   };

@@ -18,11 +18,10 @@ window.editor = (function () {
   var onOpenPopup = function () {
     popupEditImgEl.classList.remove('hidden');
     bodyEl.classList.add('modal-open');
-    window.upload.sendNewImg();
+    window.upload.addNewImg();
     window.scale.init();
     window.effect.init();
     window.hashtags.init();
-
     closePopupEditImgEl.addEventListener('click', onClosePopup);
     document.addEventListener('keydown', onPopupEscPress);
     formEl.addEventListener('submit', onFormSubmit);

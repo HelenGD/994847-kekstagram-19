@@ -72,7 +72,7 @@ window.effect = (function () {
       setSaturation(MAX_SATURATION);
       setSliderPosition(MAX_SATURATION);
     } else {
-      reset();
+      setDefaults();
     }
   };
 
@@ -121,12 +121,17 @@ window.effect = (function () {
     document.addEventListener('mousemove', onSaturationChange);
   };
 
-  var init = function () {
+  var setDefaults = function () {
     removeCurrentEffect();
     imgPreviewEl.style.filter = '';
     hideLevelSlider();
     effectLevelValueEl.value = 100;
     currentEffect = null;
+    effectsRadiosEl[0].checked = true;
+  };
+
+  var init = function () {
+    setDefaults();
 
     effectLevelLineEl.addEventListener('mouseup', onSaturationChange);
     effectLevelPinEl.addEventListener('mousedown', onPinMouseDown);
