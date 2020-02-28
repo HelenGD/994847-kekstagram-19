@@ -12,7 +12,6 @@ window.popups = (function () {
 
     var closePopup = function () {
       popupEl.remove();
-
       popupEl.removeEventListener('click', onButtonClick);
       document.removeEventListener('click', onSectionClick);
       document.removeEventListener('keydown', onPopupEscPress);
