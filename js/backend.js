@@ -4,13 +4,14 @@ window.backend = (function () {
   var DOWNLOAD = 'https://js.dump.academy/kekstagram/data';
   var UPLOAD = 'https://js.dump.academy/kekstagram';
   var TIMEOUT_IN_MS = 10000;
+  var STATUS_OK = 200;
 
   var load = function (options) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === STATUS_OK) {
         options.onSuccess(xhr.response);
       } else {
         options.onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);

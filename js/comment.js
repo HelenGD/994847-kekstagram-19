@@ -18,10 +18,11 @@ window.comment = (function () {
 
   var render = function (comments) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < comments.length; i++) {
-      var itemComment = createElement(comments[i]);
+    comments.forEach(function (comment) {
+      var itemComment = createElement(comment);
       fragment.appendChild(itemComment);
-    }
+    });
+
     commentsBlockEl.textContent = '';
     commentsBlockEl.appendChild(fragment);
   };

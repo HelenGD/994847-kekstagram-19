@@ -5,6 +5,7 @@ window.effect = (function () {
   var MAX_PHOBOS = 3;
   var MAX_HEAT = 3;
   var MIN_HEAT = 1;
+  var MAX_EFFECT_VALUE = 100;
 
   var effectLevelEl = document.querySelector('.effect-level');
   var effectsRadiosEl = document.querySelectorAll('.effects__radio');
@@ -125,7 +126,7 @@ window.effect = (function () {
     removeCurrentEffect();
     imgPreviewEl.style.filter = '';
     hideLevelSlider();
-    effectLevelValueEl.value = 100;
+    effectLevelValueEl.value = MAX_EFFECT_VALUE;
     currentEffect = null;
     effectsRadiosEl[0].checked = true;
   };

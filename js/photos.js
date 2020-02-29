@@ -42,12 +42,11 @@ window.photos = (function () {
     clear();
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < photos.length; i++) {
-      var photo = photos[i];
+    photos.forEach(function (photo) {
       var element = createElement(photo);
       registerShowPreview(element, photo);
       fragment.appendChild(element);
-    }
+    });
 
     picturesEl.appendChild(fragment);
   };
